@@ -1,4 +1,4 @@
-- hosts: a;;  # 대상 호스트 또는 그룹 이름을 입력합니다.
+- hosts: all  # 대상 호스트 또는 그룹 이름을 입력합니다.
   #remote_user: your_remote_user  # 원격 서버에서의 사용자 이름을 입력합니다. (일반적으로 sudo 권한을 가진 사용자를 사용합니다.)
   become: yes
   tasks:
