@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - name: Get a list of user accounts
-      shell: "cut -d: -f1 /etc/passwd"
+      shell: "awk -F':' '($2 != \"*\" && $2 != \"!\" && $2 != \"\") { print $1 }' /etc/shadow"
       register: users_list
 
     - debug:
