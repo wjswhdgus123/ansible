@@ -1,0 +1,14 @@
+- hosts: all
+  #remote_user: your_remote_user
+  become: yes
+  vars:
+    new_username: "{{ new_username }}"
+    new_password: "{{ new_password | password_hash('sha512') }}"
+  tasks:
+    - name: Create a new user
+      user:
+        name: "{{ new_username }}"
+        password: "{{ new_password }}"
+        groups: "{{ new_username }}"
+        shell: /bin/bash
+        state: present
