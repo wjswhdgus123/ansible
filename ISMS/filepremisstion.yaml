@@ -1,0 +1,24 @@
+- hosts: all  # 대상 호스트 또는 그룹 이름을 입력합니다.
+  #remote_user:   # 원격 서버에서의 사용자 이름을 입력합니다. (일반적으로 sudo 권한을 가진 사용자를 사용합니다.)
+  become: yes
+  tasks:
+    - name: Change hosts file permission
+      file:
+        path: /etc/hosts  # 파일 또는 디렉토리의 경로를 입력합니다.
+        owner: root  # 파일 또는 디렉토리의 소유자를 입력합니다. (옵션)
+        group: root  # 파일 또는 디렉토리의 그룹을 입력합니다. (옵션)
+        mode: "0600"  # 파일 또는 디렉토리의 퍼미션을 입력합니다.
+  tasks:
+    - name: Change passwd file permission
+      file:
+        path: /etc/passwd  # 파일 또는 디렉토리의 경로를 입력합니다.
+        owner: root  # 파일 또는 디렉토리의 소유자를 입력합니다. (옵션)
+        group: root  # 파일 또는 디렉토리의 그룹을 입력합니다. (옵션)
+        mode: "0600"  # 파일 또는 디렉토리의 퍼미션을 입력합니다.
+  tasks:
+    - name: Change passwd file permission
+      file:
+        path: /etc/shadow  # 파일 또는 디렉토리의 경로를 입력합니다.
+        owner: root  # 파일 또는 디렉토리의 소유자를 입력합니다. (옵션)
+        group: root  # 파일 또는 디렉토리의 그룹을 입력합니다. (옵션)
+        mode: "0400"  # 파일 또는 디렉토리의 퍼미션을 입력합니다.
