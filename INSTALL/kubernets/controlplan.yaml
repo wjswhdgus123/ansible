@@ -1,0 +1,20 @@
+- hosts: controlplan
+  become: yes
+  tasks: 
+   - name: k8s setting
+     shell: "{{item}}"
+     with_items:
+        - "echo 'y'| kubeadm reset"
+        - "kubeadm init --pod-network-cidr=192.168.0.0/16"
+        - "openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //' > /tmp/ssltoken"
+        - "export KUBECONFIG=/etc/kubernetes/admin.conf"
+        - "mkdir -p $HOME/.kube"
+        - "cp -a /etc/kubernetes/admin.conf $HOME/.kube/config"
+        - "chown $(id -u):$(id -g) $HOME/.kube/config"
+        - "export KUBECONFIG=/etc/kubernetes/admin.conf"
+        - "kubeadm token list |tail -1 |cut -c1-23 > /tmp/token"
+        - "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml"
+   - name: bashrc kube config 
+     lineinfile:
+       path: $HOME/.bashrc
+       line: "KUBECONFIG=/etc/kubernetes/admin.conf"

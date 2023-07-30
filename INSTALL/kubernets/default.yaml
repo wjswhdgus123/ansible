@@ -1,0 +1,8 @@
+- hosts: all
+  become: yes
+  tasks:
+   - name : set sudoers
+     lineinfile:
+      path: /etc/sudoers
+      regexp: '%sudo   ALL=(ALL:ALL) ALL'
+      line: "%sudo   ALL=(ALL:ALL) NOPASSWD: ALL"

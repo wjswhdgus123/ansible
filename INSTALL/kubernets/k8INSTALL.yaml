@@ -1,0 +1,124 @@
+- hosts: all
+  become: yes
+  tasks:
+   - name: sysctl config File Create
+     file:
+       path: /etc/sysctl.d/kubernetes.conf
+       state: touch
+   
+   - name: sysctl config File Create
+     file:
+       path: /etc/modules-load.d/k8s.conf
+       state: touch
+
+   - name: nf-call-ip6tables Insert kubernetes.conf
+     lineinfile:
+       path: /etc/sysctl.d/kubernetes.conf
+       line: "net.bridge.bridge-nf-call-ip6tables = 1"
+
+   - name: nf_call_iptables Insert kubernetes.conf
+     lineinfile:
+       path: /etc/sysctl.d/kubernetes.conf
+       line: "net.bridge.bridge-nf-call-iptables = 1"
+
+   - name: ipv4_Forward Insert kubernetes.conf
+     lineinfile:
+       path: /etc/sysctl.d/kubernetes.conf
+       line: "net.ipv4.ip_forward = 1"
+   
+   - name: modules add k8s
+     lineinfile:
+       path: /etc/modules-load.d/k8s.conf
+       line: "overlay"
+   
+   - name: ipv4_Forward Insert kubernetes.conf
+     lineinfile:
+       path: /etc/modules-load.d/k8s.conf
+       line: "br_netfilter"
+
+   - name: fstab swap off
+     lineinfile:
+       path: /etc/fstab
+       regexp: '/swap'
+       state: absent
+
+
+   - name: Containerd config Copy
+     shell: "{{item}}"
+     with_items:
+        - "mkdir -p /etc/containerd" 
+        - "swapoff -a" 
+        - "containerd config default > /etc/containerd/config.toml" 
+        - "sed -i s/'SystemdCgroup = false'/'SystemdCgroup = true'/g /etc/containerd/config.toml " 
+        - "modprobe overlay" 
+        - "modprobe br_netfilter"
+        - "sysctl --system"
+        - "systemctl restart containerd"
+        - "systemctl enable kubelet"
+        - "systemctl start kubelet"
+        - "kubeadm config images pull"
+
+- hosts: controlplan
+  become: yes
+  tasks: 
+   - name: k8s setting
+     shell: "{{item}}"
+     with_items:
+        - "echo 'y'| kubeadm reset"
+        - "kubeadm init --pod-network-cidr=192.168.0.0/16"
+        - "openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //' > /tmp/ssltoken"
+        - "export KUBECONFIG=/etc/kubernetes/admin.conf"
+        - "mkdir -p $HOME/.kube"
+        - "cp -a /etc/kubernetes/admin.conf $HOME/.kube/config"
+        - "chown $(id -u):$(id -g) $HOME/.kube/config"
+        - "export KUBECONFIG=/etc/kubernetes/admin.conf"
+        - "kubeadm token list |tail -1 |cut -c1-23 > /tmp/token"
+        - "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml"
+
+   - name: bashrc kube config 
+     lineinfile:
+       path: $HOME/.bashrc
+       line: "KUBECONFIG=/etc/kubernetes/admin.conf"
+
+   - name: k8s setting
+     fetch:
+        src: "/tmp/token"
+        dest: "/tmp/"  
+
+
+   - name: k8s setting
+     fetch:
+        src: "/tmp/ssltoken"
+        dest: "/tmp/"  
+
+- hosts: k8-work 
+  become: yes
+  tasks:
+
+   - name: Copying files from remote server
+     copy:
+       src: "/tmp/192.168.1.100/tmp/token"
+       dest: "/tmp/"
+
+   - name: Copying files from remote server
+     copy:
+       src: "/tmp/192.168.1.100/tmp/ssltoken"
+       dest: "/tmp/"
+
+
+- hosts: k8-work
+  become: yes
+  tasks:
+   - name: k8 token var
+     shell: cat /tmp/token
+     register: token
+   - name: k8 ssltoken var
+     shell: cat /tmp/ssltoken
+     register: ssltoken
+       
+   - name: work join
+     shell: "{{ item }}"
+     with_items:
+        - "echo 'y' | kubeadm reset"
+        - "systemctl start kubelet"
+        - "kubeadm join 192.168.1.100:6443 --token {{token.stdout}} --discovery-token-ca-cert-hash sha256:{{ssltoken.stdout}} "
