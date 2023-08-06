@@ -8,6 +8,10 @@
         owner: root  # 파일 또는 디렉토리의 소유자를 입력합니다. (옵션)
         group: root  # 파일 또는 디렉토리의 그룹을 입력합니다. (옵션)
         mode: "0600"  # 파일 또는 디렉토리의 퍼미션을 입력합니다.
+        register: hosts
+    - debug:
+        var: hosts.stdout_lines
+
   tasks:
     - name: Change passwd file permission
       file:
@@ -15,6 +19,10 @@
         owner: root  # 파일 또는 디렉토리의 소유자를 입력합니다. (옵션)
         group: root  # 파일 또는 디렉토리의 그룹을 입력합니다. (옵션)
         mode: "0600"  # 파일 또는 디렉토리의 퍼미션을 입력합니다.
+        register: passwd
+    - debug:
+        var: passwd.stdout_lines
+
   tasks:
     - name: Change passwd file permission
       file:
@@ -22,3 +30,6 @@
         owner: root  # 파일 또는 디렉토리의 소유자를 입력합니다. (옵션)
         group: root  # 파일 또는 디렉토리의 그룹을 입력합니다. (옵션)
         mode: "0400"  # 파일 또는 디렉토리의 퍼미션을 입력합니다.
+        register: shadow
+    - debug:
+        var: shadow.stdout_lines
