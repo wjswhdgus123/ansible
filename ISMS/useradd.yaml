@@ -9,6 +9,6 @@
       user:
         name: "{{ new_username }}"
         password: "{{ new_password }}"
-        groups: "{{ new_username }}"
+        groups: "{{ groups }}"
         shell: /bin/bash
         state: present
