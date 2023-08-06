@@ -6,7 +6,7 @@
     file:
       path: "/etc/hosts"
       mode: 0600
-      register: "check_log"
-  - name: debug result
-      debug:
-        msg: "{{ check_log }}"
+    register: "check_log"
+  
+  - debug:
+      msg: "{{ check_log }}"
