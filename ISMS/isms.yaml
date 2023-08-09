@@ -10,3 +10,24 @@
       ansible.builtin.shell:
         cmd: find / ! \( -path '/proc/*' -prune \) -nogroup >> nogroup.log_`date +%Y%m%d` 
         chdir: /root/
+    - name: file permission change
+      file:
+        path: "/etc/hosts"
+        mode: 0600
+      file:
+        path: "/etc/passwd"
+        mode: 0600
+      file:
+        path: "/etc/shadow"
+        mode: 0400
+      file:
+        path: "/bin/su"
+        mode: 4750
+      file:
+        path: "/etc/rsyslog.conf"
+        mode: 640
+      
+      register: "check_log"
+  
+    - debug:
+        msg: "{{ check_log }}"
