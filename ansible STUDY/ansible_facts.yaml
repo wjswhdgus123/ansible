@@ -1,0 +1,6 @@
+- hosts: all
+  gather_facts: yes
+  tasks:
+    - name: check msg
+      debug:
+        msg: "test {{ ansible_facts['ansible_hostname'] }}!!"
