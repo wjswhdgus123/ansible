@@ -3,4 +3,4 @@
   tasks:
     - name: check ubuntu14
       debug:
-        msg: "ubuntu 14!!! file_variety is {{ ansible_facts['ansible_fqdn'] }} !!"
+        msg: "ubuntu 14!!! file_variety is {{ ansible_facts['ansible_distribution'] }} !!"
