@@ -1,7 +1,7 @@
 - hosts: all
   gather_facts: yes
   become:yes
-  task:
+  tasks:
     - name: file or dir nouser
       ansible.builtin.shell:
         cmd: find / ! \( -path '/proc/*' -prune \) -nouser >> nouser.log_`date +%Y%m%d` 
