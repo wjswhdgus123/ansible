@@ -1,0 +1,12 @@
+---
+- hosts: all
+
+  tasks:
+    - name: pid test
+      shell: ps -ef | grep "{{ name }}" | awk '{print $2}'
+      register: pid_result
+      
+    - name: echo Result
+      debug:
+        msg: pid_result.stdout_lines > 1
+      when: pid_result.stdout_lines > 1

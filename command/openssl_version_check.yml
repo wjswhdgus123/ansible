@@ -1,0 +1,12 @@
+---
+- hosts: all
+  
+  tasks:
+    - name: Check openssl version
+      shell: "openssl version"
+      register: result
+      ignore_errors: True
+#    - debug: var=result
+    - debug: msg="{{ result.stdout }}"
+    
+    

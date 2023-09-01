@@ -1,0 +1,17 @@
+---
+- hosts: all
+
+  vars  :
+    epoch_day  : "{{ ansible_date_time.epoch | int / 86400 | round() }}"
+
+  tasks :    
+    - name  : debug epoch day
+      debug : var=epoch_day
+
+    - name         : get users expired before today
+      shell        : "cat /etc/shadow | cut -d: -f1,8 | awk -F: '{if($2<{{ epoch_day }} && $2 != \"\"){print $0}}' | cut -d: -f1"
+      changed_when : False
+      register     : expired_users
+
+    - name  : debug expired_users
+      debug : var=expired_users.stdout_lines

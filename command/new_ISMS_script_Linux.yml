@@ -1,0 +1,14 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Copy Shell
+      copy:
+        src: /var/lib/awx/projects/script/{{ copy_src }}
+        dest: "{{ copy_dest }}"
+        owner: root
+        group: root
+        mode: 0744
+        
+    - name: Excute Shell
+      command: sh "{{ sh_path }}"

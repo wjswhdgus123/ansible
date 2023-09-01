@@ -1,0 +1,9 @@
+- hosts: all
+
+  tasks:
+    - name: Excute backup
+      command: sh /backup/backup.sh
+      ignore_errors: True
+      
+    - name : Delete Backup Data (last 3 days)
+      command: "find /backup/db/ -name '*' -mtime +2 -delete"

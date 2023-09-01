@@ -1,0 +1,18 @@
+---
+- hosts: all
+
+  tasks:
+    - name: java version
+      shell: java -version
+      register: java
+      ignore_errors: True
+    - debug: msg="{{ java.stderr }}"
+    
+    - name: openssl version
+      shell: openssl version
+      register: openssl
+      ignore_errors: True
+    - debug: msg="{{ openssl.stdout }}"
+      
+      
+     

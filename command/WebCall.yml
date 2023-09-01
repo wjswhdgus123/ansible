@@ -1,0 +1,14 @@
+---
+- hosts: all
+  
+  tasks:
+    - name: Enter Web Page
+      uri:
+        url: "{{ web_address }}"
+        return__content: yes
+        timeout: 300
+      register: result
+    
+    - name: Print result
+      debug:
+        var: result.json

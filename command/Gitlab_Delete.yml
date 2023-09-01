@@ -1,0 +1,5 @@
+- hosts: all
+
+  tasks:
+    - name: Delete old backup file
+      command: find /var/opt/gitlab/backups -name "*.tar" -mtime +3 -exec rm -rf {} \;

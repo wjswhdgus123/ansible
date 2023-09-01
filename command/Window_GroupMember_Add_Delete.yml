@@ -1,0 +1,19 @@
+---
+- hosts: all
+  
+  tasks:
+    - name: Administrators Group Add
+      win_command: net localgroup Administrators "{{ add_groupname }}" /add
+      register: result1
+      
+    - name: Print Result 1
+      debug:
+        var: result1.stdout_lines  
+      
+    - name: Administrators Group Delete
+      win_command: net localgroup Administrators "{{ delete_groupname }}" /delete
+      register: result2
+    
+    - name: Print Result 2
+      debug:
+        var: result2.stdout_lines

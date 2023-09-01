@@ -1,0 +1,23 @@
+- hosts: all
+  gather_facts: no
+
+  tasks :
+    - name: Set exclude variable
+      set_fact:
+        exclude: "zabbix|ansible|nologin|mwlee|dwlee|jhjeon2"
+
+    - name: cmd shell
+      shell:
+        executable: /bin/bash
+        cmd: 
+          "       
+          grep -vxFf <(cut -d: -f1 /etc/group) <(cut -d: -f1 /etc/passwd) \
+          | xargs -I {} sh -c \
+          'echo [$(date +%Y%m%d%H%M%S)] WARNING: The account ['{}'] does not exist in /etc/group. Account info : $(grep '{}' /etc/passwd)' | grep -Ev '{{ exclude }}'           
+          "     
+      register: CMD
+      ignore_errors: True
+
+    - name: result gogosing
+      debug: var=CMD.stdout_lines
+      when: CMD.rc == 0

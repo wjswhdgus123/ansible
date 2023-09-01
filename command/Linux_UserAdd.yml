@@ -1,0 +1,21 @@
+---
+- hosts: all
+  
+  tasks:
+  - name: New System User
+    user: name="{{ add_user_name }}"
+        password="{{ upassword | password_hash('sha512') }}"
+        shell=/bin/bash
+    become: yes
+    become_user: root
+
+  - name: Add user to sudoers
+    lineinfile: dest=/etc/sudoers
+        regexp="{{ add_user_name }}[\s\x20]+[ALL]+"
+        line="{{ add_user_name }}   ALL=(ALL)   ALL"
+        state=present
+    become: yes
+    become_user: root
+    
+  - name: Expiring password for user "{{ add_user_name }}"
+    shell: chage -d 0 "{{ add_user_name }}"

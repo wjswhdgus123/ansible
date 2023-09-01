@@ -1,0 +1,21 @@
+{
+    "zk": "zk://172.16.30.150:2181,172.16.30.151:2181,172.16.30.152:2181/mesos",
+    "masters": ["172.16.30.150:5050","172.16.30.151:5050","172.16.30.152:5050"],
+    "refreshSeconds": 60,
+    "ttl": 60,
+    "domain": "eduwill.net",
+    "port": 53,
+    "resolvers": ["172.16.10.10","172.16.10.11"],
+    "timeout": 5,
+    "httpon": true,
+    "dsnon": true,
+    "httpport": 8123,
+    "externalon": true,
+    "listener": "172.16.30.155",
+    "SOAMname": "root.ns1.eduwill.net",
+    "SOARname": "ns1.eduwill.net",
+    "SOARefresh": 60,
+    "SOARetry": 600,
+    "SOAExpire": 86400,
+    "SOAMinttl": 60
+}

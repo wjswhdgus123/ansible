@@ -1,0 +1,11 @@
+---
+- hosts: all
+
+  tasks:
+  - name: Change User Password
+    user: name="{{ chg_user_name }}"
+        password="{{ chg_passwd | password_hash('sha512') }}"
+        update_password=always
+        shell=/bin/bash
+    become: yes
+    become_user: root

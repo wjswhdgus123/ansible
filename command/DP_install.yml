@@ -1,0 +1,152 @@
+---
+- hosts: all
+  tasks:
+  - name: Data Protector 9.05 Install by Ansible-playbook
+    command: echo '1. /etc/hosts add cellmanager' \ ; echo '2. install openssh-clients' \ ; echo '3. install xinetd' \ ; echo '4. start xinetd daemon' \ ; echo '5. copy hpdp install files' \ ; echo '6. mkdir hpdp directory' \ ; echo '7. mv install files /hpdp' \ ; echo '8. hpdp agent install' \ ; echo '9. telnet 5555 test cell manager' \ ;
+    register: result
+    ignore_errors: True
+    become: yes
+    become_user: root
+  - debug: var=result
+
+  - name: Add /etc/hosts cell manager ip
+    lineinfile: dest=/etc/hosts
+                regexp="cell manager connection 5555"
+                line="{{ ip }}          EDU-BACKUP-141.idc.eduwill.net  EDU-BACKUP-141"
+                state=present
+    become: yes
+    become_user: root
+  
+  - name: Add /etc/hosts host
+    shell: ip addr | grep "inet " | grep brd | awk '{print $2}' | awk -F/ '{print $1}' | egrep "172.16|112.175.57|183.111.159|124.137.15" >> /etc/hosts; sed -i 's/$/          '$HOSTNAME'/g' /etc/hosts
+    become: yes
+    become_user: root
+    
+  - name: "INSTALL openssh-clients"
+    yum: name=openssh-clients state=latest
+    become: yes
+    become_user: root
+    
+  - name: "INSTALL Xinetd"
+    yum: name=xinetd state=latest
+    become: yes
+    become_user: root
+    
+  - name: Start xinetd Daemon
+    command: service xinetd start
+    #command: systemctl start xinetd
+    become: yes
+    become_user: root
+    
+  - name: Start xinetd Daemon
+    command: service xinetd start
+    become: yes
+    become_user: root
+    
+  - name: Copy hp data protector Agent file v9.05 omnicf_x86.packet.Z
+    copy:
+      src: /var/lib/awx/projects/hpdp/omnicf_x86.packet.Z
+      dest: "{{ dest_pass }}"
+      owner: root
+      group: root
+      mode: 0664
+    
+  - name: Copy hp data protector Agent file v9.05 tscore_x86.packet.Z
+    copy: 
+      src: /var/lib/awx/projects/hpdp/tscore_x86.packet.Z
+      dest: "{{ dest_pass }}"
+      owner: root
+      group: root
+      mode: 0664
+    
+  - name: Copy hp data protector Agent file v9.05 ma_x86.packet.Z
+    copy:
+      src: /var/lib/awx/projects/hpdp/ma_x86.packet.Z
+      dest: "{{ dest_pass }}"
+      owner: root
+      group: root
+      mode: 0664
+    
+  - name: Copy hp data protector Agent file v9.05 da_x86.packet.Z
+    copy: 
+      src: /var/lib/awx/projects/hpdp/da_x86.packet.Z
+      dest: "{{ dest_pass }}"
+      owner: root
+      group: root
+      mode: 0664
+    
+  - name: Copy hp data protector Agent file v9.05 autodr_x86.packet.Z
+    copy:
+      src: /var/lib/awx/projects/hpdp/autodr_x86.packet.Z
+      dest: "{{ dest_pass }}"
+      owner: root
+      group: root
+      mode: 0664
+    
+  - name: Create Directory hpdp
+    raw: mkdir -p /hpdp
+    become: yes
+    become_user: root
+    
+  - name: Move Data Protector install files to hpdp directory omnicf_x86.packet.Z
+    raw: mv {{ omnicf_pass }} {{ dest }}
+    become: yes
+    become_user: root
+    
+  - name: Move Data Protector install files to hpdp directory tscore_x86.packet.Z
+    raw: mv {{ tscore_pass }} {{ dest }}
+    become: yes
+    become_user: root
+    
+  - name: Move Data Protector install files to hpdp directory ma_x86.packet.Z
+    raw: mv {{ ma_pass }} {{ dest }}
+    become: yes
+    become_user: root
+    
+  - name: Move Data Protector install files to hpdp directory da_x86.packet.Z
+    raw: mv {{ da_pass }} {{ dest }}
+    become: yes
+    become_user: root
+    
+  - name: Move Data Protector install files to hpdp directory autodr_x86.packet.Z
+    raw: mv {{ autodr_pass }} {{ dest }}
+    become: yes
+    become_user: root
+    
+  - name: Install hpdp Agent 1 omnicf
+    command: rpm -ivh /hpdp/omnicf_x86.packet.Z
+    become: yes
+    become_user: root
+    ignore_errors: true
+    
+  - name: Install hpdp Agent 2 tscore
+    command: rpm -ivh /hpdp/tscore_x86.packet.Z
+    become: yes
+    become_user: root
+    ignore_errors: true
+    
+  - name: Install hpdp Agent 3 Media Agent
+    command: rpm -ivh /hpdp/ma_x86.packet.Z
+    become: yes
+    become_user: root
+    ignore_errors: true
+    
+  - name: Install hpdp Agent 4 disk Agent
+    command: rpm -ivh /hpdp/da_x86.packet.Z
+    become: yes
+    become_user: root
+    ignore_errors: true
+    
+  - name: Install hpdp Agent 5 autodr
+    command: rpm -ivh /hpdp/autodr_x86.packet.Z
+    become: yes
+    become_user: root
+    ignore_errors: true
+    
+  - name: Telnet 5555 connection check to Cell manager server
+    raw: telnet "{{ ip }}" 5555
+    register: result
+    ignore_errors: True
+    become: yes
+    become_user: root
+  - debug: var=result

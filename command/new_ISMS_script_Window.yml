@@ -1,0 +1,29 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Create directory
+      win_file:
+        path: "{{ copy_dest }}"
+        state: directory
+        
+    - name: Copy Shell
+      win_copy:
+        src: /var/lib/awx/projects/script/{{ copy_src }}
+        dest: "{{ copy_dest }}"
+        
+    - name: Unzip file
+      win_unzip:
+        src: C:\tempscript\Windows.zip
+        dest: "{{ copy_dest }}"
+        
+    - name: Execute Command (Enter Directory)
+      win_command: C:\tempscript\Win_Server_Check.bat
+      register: result
+      
+      
+    - name: Print Result
+      debug:
+        var: result.stdout_lines
+
+

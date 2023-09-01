@@ -1,0 +1,11 @@
+---
+    - name: check if "{{ package }}" is installed
+      yum:
+        list="{{ package }}"
+      register: is_installed
+
+#    - name: install "{{ package }}" if not exist
+#      yum:
+#        name: "{{ package }}"
+#        state: latest
+#      when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed') 

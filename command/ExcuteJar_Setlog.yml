@@ -1,0 +1,6 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Execute Command
+      shell: java -jar {{ arg }} {{ jar_name }} >> {{ log_path }}

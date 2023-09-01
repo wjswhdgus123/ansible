@@ -1,0 +1,12 @@
+- hosts: all
+  gather_facts: no
+
+  tasks :
+    - name: Execute Command
+      shell: "/usr/local/esender/runEsender.sh {{ arg }}"
+      register: final_result
+      ignore_errors: True
+
+    - name: result gogosing
+      debug: var=final_result.stdout_lines
+#      when: final_result.rc == 0

@@ -1,0 +1,27 @@
+---
+- hosts: all
+  
+  tasks:
+    - name: 1. copy tar.gz
+      copy:
+        src: "{{ copy_src }}"
+        dest: "{{ copy_dest }}"
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: 2. tar extract
+      unarchive:
+        src: "{{ copy_dest }}/openssl-1.0.2o.tar.gz"
+        dest: "{{ copy_dest }}"
+        remote_src: yes
+
+    - name: 3. configure
+      shell: ./config --prefix=/usr --openssldir=/usr/local/openssl shared
+      args:
+        chdir: "{{ copy_dest }}/openssl-1.0.2o"
+
+    - name: 4. make and install
+      shell: "make && make install"
+      args:
+        chdir: "{{ copy_dest }}/openssl-1.0.2o"

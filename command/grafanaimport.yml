@@ -1,0 +1,13 @@
+---
+- hosts: all
+  connection: local
+  
+  tasks:
+    - name: test import grafana dashboard
+      grafana_dashboard:
+        grafana_url: http://grafana.eduwill.net:3000
+        grafana_api_key: "{{ grafana_api_key }}"
+        state: present
+        message: Test Grafana Import
+        overwrite: no
+        path: /test.json

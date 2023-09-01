@@ -1,0 +1,9 @@
+- hosts: all
+  #remote_user: root
+  become: yes
+  tasks:
+  - name: delete directory
+    file:
+      path: /home/{{item}}
+      state: absent
+    with_items: "{{ del_user_name }}"

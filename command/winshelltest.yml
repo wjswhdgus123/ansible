@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Delete IIS Advanced Log (EDUWILL.NET(JISA))
+      win_shell: forfiles /p "D:\AdvancedIISLogs\EDUWILL.NET(JISA)" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True

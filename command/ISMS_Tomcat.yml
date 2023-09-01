@@ -1,0 +1,13 @@
+---
+- hosts: all
+  remote_user: mheo
+  
+  # Anonymous FTP User Delete
+  tasks:
+    - name: Change Session Timeout Value
+      lineinfile: dest="{{ tomcat_web_conf_path }}"
+            regexp="<session-timeout>[0-9]*</session-timeout>"
+            line="        <session-timeout>{{ session_time }}</session-timeout>"
+            state=present
+      become: yes
+      become_user: root

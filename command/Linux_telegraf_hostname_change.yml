@@ -1,0 +1,5 @@
+- hosts: all
+
+  tasks:
+    - name: Test Command
+      command: sh /crons/replace_telegraf_hostname.sh

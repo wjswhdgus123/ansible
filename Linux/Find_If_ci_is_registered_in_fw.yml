@@ -1,0 +1,12 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks :
+    - name: gogo
+      shell: "iptables -L -n|grep 30.10;firewall-cmd --list-all|grep 30.10"
+      register: final_result
+      ignore_errors: True
+
+    - name: result gogosing
+      debug: var=final_result.stdout_lines

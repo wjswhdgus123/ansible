@@ -1,0 +1,9 @@
+---
+- hosts: all
+  
+  tasks:
+    - name: Check apache, tomcat version
+      shell: "/usr/local/tomcat/bin/version.sh"
+      register: result
+      ignore_errors: True
+    - debug: var=result

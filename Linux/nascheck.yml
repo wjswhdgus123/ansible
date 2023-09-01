@@ -1,0 +1,14 @@
+- name: Check df -h output for a specific pattern
+  hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: Execute df -h command and grep for the pattern
+      shell: df -h | grep {{ ip }}
+      register: df_output
+      ignore_errors: true  # To suppress errors if the pattern is not found
+
+    - name: Print the output if the pattern is found
+      debug:
+        msg: "Server {{ inventory_hostname }}:\n{{ df_output.stdout }}"
+      when: df_output.stdout_lines  # Execute the task only if the pattern is found

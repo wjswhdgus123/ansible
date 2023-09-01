@@ -1,0 +1,23 @@
+---
+- hosts: all
+  
+  tasks:
+    - name: Delete IIS Advanced Log (M.STUDYWILL.NET_2017)
+      win_command: forfiles /p "E:\AdvancedIISLog\M.STUDYWILL.NET_2017" /m "*.log" /d "-14" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (STUDYWILL_CERT)
+      win_command: forfiles /p "E:\AdvancedIISLog\STUDYWILL_CERT" /m "*.log" /d "-25" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    - name: Delete IIS Advanced Log (STUDYWILL_LMS)
+      win_command: forfiles /p "E:\AdvancedIISLog\STUDYWILL_LMS" /m "*.log" /d "-25" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (STUDYWILL_WEL)
+      win_command: forfiles /p "E:\AdvancedIISLog\STUDYWILL_WEL" /m "*.log" /d "-25" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    - name: Delete IIS Advanced Log (STUDYWILL_WWW)
+      win_command: forfiles /p "E:\AdvancedIISLog\STUDYWILL_WWW" /m "*.log" /d "-25" /c "cmd /c del @FILE"
+      ignore_errors: True

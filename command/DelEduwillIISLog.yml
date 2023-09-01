@@ -1,0 +1,58 @@
+---
+- hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Delete IIS Advanced Log (EDUWILL.NET(JISA))
+      win_command: forfiles /p "D:\AdvancedIISLogs\EDUWILL.NET(JISA)" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (EDUWILL.NET(RENEW))
+      win_command: forfiles /p "D:\AdvancedIISLogs\EDUWILL.NET(RENEW)" /m "*.log" /d "-8" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    - name: Delete IIS Advanced Log (EDUWILL_BOOKJISA)
+      win_command: forfiles /p "D:\AdvancedIISLogs\EDUWILL_BOOKJISA" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (EDUWILL_JEHU)
+      win_command: forfiles /p "D:\AdvancedIISLogs\EDUWILL_JEHU" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    - name: Delete IIS Advanced Log (EDUWILL_MANAGE)
+      win_command: forfiles /p "D:\AdvancedIISLogs\EDUWILL_MANAGE" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (EDUWILL_PDS(NEW))
+      win_command: forfiles /p "D:\AdvancedIISLogs\EDUWILL_PDS(NEW)" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    - name: Delete IIS Advanced Log (GOSILAND.COM)
+      win_command: forfiles /p "D:\AdvancedIISLogs\GOSILAND.COM" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (JOB.EDUWILL.NET)
+      win_command: forfiles /p "D:\AdvancedIISLogs\JOB.EDUWILL.NET" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (ONLIVE.EDUWILL.NET)
+      win_command: forfiles /p "D:\AdvancedIISLogs\ONLIVE.EDUWILL.NET" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (UNIV.EDUWILL.NET)
+      win_command: forfiles /p "D:\AdvancedIISLogs\UNIV.EDUWILL.NET" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+
+    - name: Delete IIS Advanced Log (WWW.SOCIALWILL.NET)
+      win_command: forfiles /p "D:\AdvancedIISLogs\WWW.SOCIALWILL.NET" /m "*.log" /d "-30" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    - name: Delete Temp File (Only 112.175.57.74)
+      win_command: forfiles /p "C:\Windows\Temp" /m "cab_*" /d "-2" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    - name: Delete eduwill_net Log
+      win_command: forfiles /p "D:\Log\Web\eduwill_net\W3SVC1934902871" /m "*.log" /d "-8" /c "cmd /c del @FILE"
+      ignore_errors: True
+      
+    
