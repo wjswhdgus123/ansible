@@ -1,8 +1,8 @@
 - hosts: all
   become: yes
-  task:
+  tasks:
   - name: Make sure group wheel is not in the sudoers configuration
     ansible.builtin.lineinfile:
       path: /etc/sudoers
       state: absent
-      regexp: '^%wheel'
+    regexp: '^%wheel'
