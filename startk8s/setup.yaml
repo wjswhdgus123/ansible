@@ -43,5 +43,5 @@
       shell: "{{ item }}"
       with_items:
         - "sed -i s/firstIP/{{ firstip }}/g /tmp/ansible/startk8s/metallb.yaml"
-        - "sed -i s/endIP/{{ endtip }}/g /tmp/ansible/startk8s/metallb.yaml"
+        - "sed -i s/endIP/{{ endip }}/g /tmp/ansible/startk8s/metallb.yaml"
        
