@@ -1,5 +1,8 @@
 - hosts: all
   become: yes
+  become_user: root
+  vars:
+    ansible_user: k8s
   tasks:
    - name: Update and upgrade apt packages
      apt:
@@ -10,6 +13,18 @@
    - name: install curl 
      apt:
        name: curl
+       state: present
+       update_cache: true
+  
+   - name: install iftop
+     apt:
+       name: iftop
+       state: present
+       update_cache: true
+   
+   - name: install ntp 
+     apt:
+       name: chrony
        state: present
        update_cache: true
      
@@ -28,6 +43,12 @@
    - name: install lsb
      apt:
        name: lsb-release
+       state: present
+       update_cache: true
+
+   - name: install nfs-common
+     apt:
+       name: nfs-common
        state: present
        update_cache: true
 

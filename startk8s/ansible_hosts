@@ -1,0 +1,22 @@
+[k8s]
+10.10.40.55 ansible_ssh_user=oneuser
+10.10.40.56 ansible_ssh_user=oneuser
+10.10.40.57 ansible_ssh_user=oneuser
+10.10.40.80 ansible_ssh_user=oneuser
+10.10.40.81 ansible_ssh_user=oneuser
+10.10.40.82 ansible_ssh_user=oneuser
+[controller_salve]
+10.10.40.56 ansible_ssh_user=oneuser
+10.10.40.57 ansible_ssh_user=oneuser
+
+[controller01]
+10.10.40.55 ansible_ssh_user=oneuser
+[controller]
+10.10.40.55 ansible_ssh_user=oneuser
+10.10.40.56 ansible_ssh_user=oneuser
+10.10.40.57 ansible_ssh_user=oneuser
+
+[worknode]
+10.10.40.80 ansible_ssh_user=oneuser
+10.10.40.81 ansible_ssh_user=oneuser
+10.10.40.82 ansible_ssh_user=oneuser

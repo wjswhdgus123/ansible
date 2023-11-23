@@ -1,0 +1,14 @@
+- hosts: k8s
+  become: yes
+  tasks:
+    - name: Allow passwordless sudo for the oneuser user
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^oneuser'
+        line: 'oneuser ALL=(ALL) NOPASSWD:ALL'
+        validate: 'visudo -cf %s'
+
+      # Optionally, if using a specific editor to modify sudoers
+      environment:
+        EDITOR: "/usr/bin/vim" # Replace with your preferred editor
