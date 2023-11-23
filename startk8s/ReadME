@@ -1,0 +1,5 @@
+## INSTALL K8S Scripts
+### 1. 설치 테스트 환경 
+``` OS : ubuntu 22.04
+    설치 환경 : 3 master 3node
+ ```
