@@ -5,7 +5,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - fistIP-endIP
+  - firstIP-endIP
 
 ---
 apiVersion: metallb.io/v1beta1
