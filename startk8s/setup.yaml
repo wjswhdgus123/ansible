@@ -31,17 +31,17 @@
     - name: timezone.yaml ip setup
       shell: "{{ item }}"
       with_items:
-        - "sed -i s/controller_01/{{ controller01 }}/g /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i s/controller_02/{{ controller02 }}/g /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i s/controller_03/{{ controller03 }}/g /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i s/worknode_01/{{ worknode01 }}/g /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i s/worknode_02/{{ worknode02 }}/g /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i s/worknode_03/{{ worknode03 }}/g /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i 's/vipaddr/{{ vipaddr }}/g' /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i 's/INTERFACENAME/{{ interfacename }}/g' /tmp/ansible/startk8s/k8s.yaml"
+        - "sed -i s/controller_01/{{ controller01 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/controller_02/{{ controller02 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/controller_03/{{ controller03 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/worknode_01/{{ worknode01 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/worknode_02/{{ worknode02 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/worknode_03/{{ worknode03 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i 's/vipaddr/{{ vipaddr }}/g' /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i 's/INTERFACENAME/{{ interfacename }}/g' /tmp/ansible/startk8s/timezone.yaml"
     - name: metallb.yaml ip setup
       shell: "{{ item }}"
       with_items:
-        - "sed -i s/firstIP/{{ firstip }}/g /tmp/ansible/startk8s/k8s.yaml"
-        - "sed -i s/endIP/{{ endtip }}/g /tmp/ansible/startk8s/k8s.yaml"
+        - "sed -i s/firstIP/{{ firstip }}/g /tmp/ansible/startk8s/metallb.yaml"
+        - "sed -i s/endIP/{{ endtip }}/g /tmp/ansible/startk8s/metallb.yaml"
        
