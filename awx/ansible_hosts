@@ -1,0 +1,16 @@
+[kvm]
+192.168.110.10 ansible_ssh_user=ubuntu
+192.168.110.11 ansible_ssh_user=ubuntu
+[nfs]
+192.168.110.4 ansible_ssh_user=root
+
+[controller01]
+192.168.110.40 ansible_ssh_user=k8s
+[controller]
+192.168.110.40 ansible_ssh_user=k8s
+192.168.110.41 ansible_ssh_user=k8s
+192.168.110.42 ansible_ssh_user=k8s
+
+[worknode]
+192.168.110.30 ansible_ssh_user=k8s
+192.168.110.31 ansible_ssh_user=k8s
