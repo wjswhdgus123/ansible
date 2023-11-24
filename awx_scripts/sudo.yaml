@@ -1,4 +1,4 @@
-- hosts: {{ group }}
+- hosts: all
   become: yes
   tasks:
     - name: Allow passwordless sudo for the oneuser user
