@@ -13,13 +13,10 @@
         - "chmod +x /usr/bin/yq"
         - "yq -i 'del(.network.ethernets.{{ ansible_default_ipv4.interface }})' /etc/netplan/00-installer-config.yaml"
    
-    - name: Copy brige file
+    - name: Copy netplan YAML file to /etc/netplan/
       copy:
         src: /tmp/ansible/kvm/01.bride.yaml
         dest: /etc/netplan/01.bride.yaml
-        owner: root
-        group: root
-        mode: '0644'
       
 
     - name: Update Interface
