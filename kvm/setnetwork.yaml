@@ -38,6 +38,22 @@
         path: /etc/netplan/01.bride.yaml
         regexp: '192\.168\.110\.1'  # 변경할 패턴 정규식
         replace: "{{ ansible_default_ipv4.gateway }}"  # 새로운 문자열
-
+    
+    - name: k8s setting
+      shell: "{{ item }}"
+      with_items:
+        - "netplan generate"
+        - "netplan --debug apply"
+        
+    - name: Create host-bridge.xml
+      blockinfile:
+        path: host-bridge.xml
+        block: |
+          <network>
+            <name>host-bridge</name>
+            <forward mode="bridge"/>
+            <bridge name="br0"/>
+          </network>
+      
 
     
