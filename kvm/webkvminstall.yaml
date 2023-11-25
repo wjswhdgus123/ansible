@@ -48,6 +48,7 @@
         - "source /kvm/webvirtcloud/venv/bin/activate"
         - "pip install -r /kvm/webvirtcloud/conf/requirements.txt"
         - "python3 /kvm/webvirtcloud/manage.py migrate"
+        - "chown -R www-data.kvm /kvm/"
         - "rm /etc/nginx/sites-enabled/default"
         - "python3 /kvm/webvirtcloud/manage.py migrate"
         

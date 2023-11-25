@@ -26,6 +26,7 @@
         path: /etc/netplan/01.bride.yaml
         regexp: 'enp6s0'  # 변경할 패턴 정규식
         replace: "{{ ansible_default_ipv4.interface }}"  # 새로운 문자열
+      when: ansible_default_ipv4.interface != 'br0'
 
     - name: Update Interface
       ansible.builtin.replace:
