@@ -46,6 +46,11 @@
         - "netplan --debug apply"
       ignore_errors: yes
 
+    - name: Create empty file
+      file:
+        path: /root/host-bridge.xml
+        state: touch
+
     - name: Create host-bridge.xml
       blockinfile:
         path: /root/host-bridge.xml
