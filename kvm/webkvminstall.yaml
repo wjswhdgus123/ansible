@@ -30,7 +30,7 @@
    
     - name: Update Interface
       ansible.builtin.replace:
-        path: /var/www/html/webvirtcloud/settings.py
+        path: /kvm/webvirtcloud/settings.py
         regexp: "SECRET_KEY = \"\""  # 변경할 패턴 정규식
         replace: "SECRET_KEY = \"@whdgus123!\""
 

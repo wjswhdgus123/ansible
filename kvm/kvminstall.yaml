@@ -13,7 +13,7 @@
       shell: "{{ item }}"
       with_items:
         - "virsh net-define /root/host-bridge.xml"
-        - "virsh net-start /root/host-bridge"
+        - "virsh net-start host-bridge"
         - "virsh net-autostart host-bridge"
         
   
