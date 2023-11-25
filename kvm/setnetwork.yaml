@@ -15,8 +15,8 @@
    
     - name: Copy netplan YAML file to /etc/netplan/
       copy:
-        src: /tmp/ansible/kvm/01.bride.yaml
-        dest: /etc/netplan/01.bride.yaml
+        src: /tmp/ansible/kvm/01\.bride\.yaml
+        dest: /etc/netplan/01\.bride\.yaml
       
 
     - name: Update Interface
