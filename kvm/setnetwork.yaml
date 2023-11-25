@@ -48,7 +48,7 @@
 
     - name: Create host-bridge.xml
       blockinfile:
-        path: host-bridge.xml
+        path: /root/host-bridge.xml
         block: |
           <network>
             <name>host-bridge</name>
