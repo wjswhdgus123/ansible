@@ -31,12 +31,12 @@
       
         - "cp /kvm/webvirtcloud/webvirtcloud/settings.py.template /kvm/webvirtcloud/webvirtcloud/settings.py"
         - "cp /kvm/webvirtcloud/conf/supervisor/webvirtcloud.conf /etc/supervisor/conf.d"
-        - "cp /kvm/webvirtcloud/webvirtcloud/conf/nginx/webvirtcloud.conf /etc/nginx/conf.d"
+        - "cp /kvm/webvirtcloud/conf/nginx/webvirtcloud.conf /etc/nginx/conf.d"
         
    
     - name: Update Interface
       ansible.builtin.replace:
-        path: /kvm/webvirtcloud/settings.py
+        path: /kvm/webvirtcloud/webvirtcloud/settings.py
         regexp: "SECRET_KEY = \"\""  # 변경할 패턴 정규식
         replace: "SECRET_KEY = \"@whdgus123!\""
 
