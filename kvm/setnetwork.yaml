@@ -60,6 +60,16 @@
             <forward mode="bridge"/>
             <bridge name="br0"/>
           </network>
+    - name: replace host-bridge.xml
+      ansible.builtin.replace:
+        path: /root/host-bridge.xml
+        regexp: '# BEGIN ANSIBLE MANAGED BLOCK'
+        replace: ""  # 새로운 문자열
+    - name: replace host-bridge.xml
+      ansible.builtin.replace:
+        path: /root/host-bridge.xml
+        regexp: '# END ANSIBLE MANAGED BLOCK'
+        replace: ""  # 새로운 문자열
       
 
     
