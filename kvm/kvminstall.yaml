@@ -1,0 +1,17 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Run modprobe command
+      command: modprobe vhost_net
+
+    - name: Add vhost_net to /etc/modules
+      lineinfile:
+        path: /etc/modules
+        line: 'vhost_net'
+        state: present
+
+    - name: Get interface with IP Interface Name
+     ansible.builtin.shell: ip addr show | grep "{{ CIDR }}" | awk '{print $NF}'
+     register: interface_name
+     changed_when: False
+    

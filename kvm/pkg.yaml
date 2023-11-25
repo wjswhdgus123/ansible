@@ -1,0 +1,95 @@
+- hosts: all
+  become: yes
+  tasks:
+   - name: Update and upgrade apt packages
+     apt:
+       upgrade: yes
+       update_cache: yes
+       cache_valid_time: 86400 #One day
+
+   - name: install curl 
+     apt:
+       name: curl
+       state: present
+       update_cache: true
+
+   - name: install iftop 
+     apt:
+       name: iftop
+       state: present
+       update_cache: true
+
+   - name: install qemu-kvm
+     apt:
+       name: qemu-kvm
+       state: present
+       update_cache: true
+
+   - name: install libvirt-daemon 
+     apt:
+       name: libvirt-daemon
+       state: present
+       update_cache: true
+
+   - name: install bridge-utils
+     apt:
+       name: bridge-utils
+       state: present
+       update_cache: true
+
+   - name: install virtinst
+     apt:
+       name: virtinst
+       state: present
+       update_cache: true
+
+   - name: install libvirt-daemon-system
+     apt:
+       name: libvirt-daemon-system
+       state: present
+       update_cache: true
+       
+   - name: install virt-top
+     apt:
+       name: virt-top
+       state: present
+       update_cache: true
+
+   - name: libguestfs-tools
+     apt:
+       name: libguestfs-tools
+       state: present
+       update_cache: true
+
+   - name: libosinfo-bin
+     apt:
+       name: libosinfo-bin
+       state: present
+       update_cache: true
+
+   - name: qemu-system
+     apt:
+       name: qemu-system
+       state: present
+       update_cache: true
+
+   - name: virt-manager
+     apt:
+       name: virt-manager
+       state: present
+       update_cache: true
+   
+   - name: install ntp 
+     apt:
+       name: chrony
+       state: present
+       update_cache: true
+       
+   - name: install nfs-common
+     apt:
+       name: nfs-common
+       state: present
+       update_cache: true
+
+      
+   

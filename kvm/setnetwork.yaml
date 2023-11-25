@@ -1,0 +1,41 @@
+- hosts: all
+  become: yes
+  tasks:
+     
+   
+    - name: k8s setting
+      shell: "{{ item }}"
+      with_items:
+        - "wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq"
+        - "chmod +x /usr/bin/yq"
+        - "yq -i 'del(.network.ethernets.{{ ansible_default_ipv4.interface }})' /etc/netplan/00-installer-config.yaml"
+   
+    - name: Copy keepalived.conf file
+      copy:
+        src: /tmp/ansible/kvm/01.bride.yaml
+        dest: /etc/netplan/01.bride.yaml
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+
+    - name: Update Interface
+     ansible.builtin.replace:
+       path: /etc/netplan/01.bride.yaml
+       regexp: 'enp6s0'  # 변경할 패턴 정규식
+       replace: "{{ ansible_default_ipv4.interface }}"  # 새로운 문자열
+
+    - name: Update Interface
+     ansible.builtin.replace:
+       path: /etc/netplan/01.bride.yaml
+       regexp: '192\.168\.110\.10'  # 변경할 패턴 정규식
+       replace: "{{ ansible_default_ipv4.address }}"  # 새로운 문자열
+
+    - name: Update Interface
+     ansible.builtin.replace:
+       path: /etc/netplan/01.bride.yaml
+       regexp: '192\.168\.110\.1'  # 변경할 패턴 정규식
+       replace: "{{ ansible_default_ipv4.gateway }}"  # 새로운 문자열
+
+
+    
