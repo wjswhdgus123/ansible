@@ -20,19 +20,19 @@
         backup: yes
 
     - name: Update Interface
-     ansible.builtin.replace:
+      ansible.builtin.replace:
        path: /etc/netplan/01.bride.yaml
        regexp: 'enp6s0'  # 변경할 패턴 정규식
        replace: "{{ ansible_default_ipv4.interface }}"  # 새로운 문자열
 
     - name: Update Interface
-     ansible.builtin.replace:
+      ansible.builtin.replace:
        path: /etc/netplan/01.bride.yaml
        regexp: '192\.168\.110\.10'  # 변경할 패턴 정규식
        replace: "{{ ansible_default_ipv4.address }}"  # 새로운 문자열
 
     - name: Update Interface
-     ansible.builtin.replace:
+      ansible.builtin.replace:
        path: /etc/netplan/01.bride.yaml
        regexp: '192\.168\.110\.1'  # 변경할 패턴 정규식
        replace: "{{ ansible_default_ipv4.gateway }}"  # 새로운 문자열
