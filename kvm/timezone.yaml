@@ -21,7 +21,7 @@
         name: chrony
         state: restarted
     
-    - name: Set timezone to Seoul
-      timezone:
+    - name: Set timezone toAsia/Seoul
+      community.general.timezone:
         name: Asia/Seoul
         
