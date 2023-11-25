@@ -6,7 +6,7 @@
         repo: https://github.com/wjswhdgus123/ansible.git
         dest: /tmp/ansible
    
-    - name: k8s setting
+    - name: install yq setting
       shell: "{{ item }}"
       with_items:
         - "wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq"
@@ -44,7 +44,7 @@
       with_items:
         - "netplan generate"
         - "netplan --debug apply"
-        
+
     - name: Create host-bridge.xml
       blockinfile:
         path: host-bridge.xml

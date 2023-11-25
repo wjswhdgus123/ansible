@@ -21,7 +21,5 @@
         name: chrony
         state: restarted
     
-    - name: Set timezone toAsia/Seoul
-      community.general.timezone:
-        name: Asia/Seoul
-        
+    - name: install yq setting
+      shell: "timedatectl set-timezone 'Asia/Seoul'"
