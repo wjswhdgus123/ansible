@@ -9,7 +9,13 @@
         group: kvm
         mode: '0755'
 
-    - name: Create www-data user
+    - name: Add www-data to kvm group
+      user:
+        name: www-data
+        groups: kvm
+        append: yes
+
+    - name: Change www-data home directory to /kvm
       user:
         name: www-data
         home: /kvm
@@ -31,8 +37,8 @@
     - name: Update Interface
       ansible.builtin.replace:
         path: /kvm/webvirtcloud/settings.py
-        regexp: "SECRET_KEY = \"\""  # 변경할 패턴 정규식
-        replace: "SECRET_KEY = \"@whdgus123!\""
+        regexp: "SECRET_KEY = """  # 변경할 패턴 정규식
+        replace: "SECRET_KEY = "@whdgus123!""
 
     - name: webkvm setting
       shell: "{{ item }}"
