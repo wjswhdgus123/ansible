@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: awx-nfs-pv01
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    path: /nvmevol  # NAS 서버의 경로
+    server: nas.bestpath.co.kr  # NFS 주소
+  persistentVolumeReclaimPolicy: Retain  # PV 재사용 정책 설정 (필요에 따라 변경 가능)
