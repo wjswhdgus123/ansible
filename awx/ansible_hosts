@@ -1,6 +1,7 @@
 [kvm]
 192.168.110.10 ansible_ssh_user=ubuntu
 192.168.110.11 ansible_ssh_user=ubuntu
+192.168.110.12 ansible_ssh_user=ubuntu
 [nfs]
 192.168.110.4 ansible_ssh_user=root
 
