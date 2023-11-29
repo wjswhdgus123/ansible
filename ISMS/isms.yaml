@@ -31,3 +31,9 @@
   
     - debug:
         msg: "{{ check_log }}"
+    
+     - name: Add TMOUT variable
+      lineinfile:
+        path: /etc/profile
+        line: 'TMOUT=600'
+        insertafter: EOF

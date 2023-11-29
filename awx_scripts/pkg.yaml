@@ -38,3 +38,27 @@
        name: libpam-pwquality
        state: present
        update_cache: true
+   
+   - name: install sysstat
+     apt:
+       name: sysstat
+       state: present
+       update_cache: true
+   
+   - name: install tcptraceroute
+     apt:
+       name: tcptraceroute
+       state: present
+       update_cache: true
+    
+   - name: install tcpflow
+     apt:
+       name: tcpflow
+       state: present
+       update_cache: true
+    
+   - name: install net-tools
+     apt:
+       name: net-tools
+       state: present
+       update_cache: true
