@@ -16,3 +16,6 @@
 192.168.110.30 ansible_ssh_user=k8s
 192.168.110.31 ansible_ssh_user=k8s
 192.168.110.32 ansible_ssh_user=k8s
+
+[monitoring]
+192.168.110.50 ansible_ssh_user=ubuntu
