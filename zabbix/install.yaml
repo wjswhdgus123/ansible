@@ -1,8 +1,91 @@
 - hosts: all
   become: yes
   tasks:
-   - name: Update and upgrade apt packages
-     apt:
-       upgrade: yes
-       update_cache: yes
-       cache_valid_time: 86400 #One day
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+  
+    - name: Download Zabbix repository file
+      get_url:
+        url: "https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb"
+        dest: "/tmp/zabbix-release_6.4-1+ubuntu22.04_all.deb"
+
+    - name: Install Zabbix repository package
+      apt:
+        deb: "/tmp/zabbix-release_6.4-1+ubuntu22.04_all.deb"
+    
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+    
+    - name: install zabbix-server-mysql
+      apt:
+        name: zabbix-server-mysql
+        state: present
+        update_cache: true
+    
+    - name: install zabbix-frontend-php
+      apt:
+        name: zabbix-frontend-php
+        state: present
+        update_cache: true
+    
+    - name: install zabbix-nginx-conf
+      apt:
+        name: zabbix-nginx-conf
+        state: present
+        update_cache: true
+    
+    - name: install zabbix-sql-scripts
+      apt:
+        name: zabbix-sql-scripts
+        state: present
+        update_cache: true
+    
+    - name: install zabbix-agent
+      apt:
+        name: zabbix-agent
+        state: present
+        update_cache: true
+
+    - name: Create Zabbix database
+      mysql_db:
+        name: zabbix
+        collation: utf8mb4_bin
+        encoding: utf8mb4
+        state: present
+
+    - name: Create Zabbix user
+      mysql_user:
+        name: zabbix
+        password: {{ passwd }}
+        priv: 'zabbix.*:ALL'
+        host: localhost
+        state: present
+
+    - name: Enable log_bin_trust_function_creators
+      mysql_variables:
+        name: log_bin_trust_function_creators
+        value: '1'
+        global: yes 
+
+    - name: Load Zabbix SQL file into MySQL
+      shell: "zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p {{ passwd }}" 
+    
+    - name: Set MySQL global variable
+      mysql_variables:
+        name: log_bin_trust_function_creators
+        value: '0'
+        global: yes
+
+    
+    
+
+
+
+    
+  
