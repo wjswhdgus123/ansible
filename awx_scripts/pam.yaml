@@ -1,0 +1,13 @@
+- name: Set login failure threshold and lockout duration
+  hosts: your_host_or_group
+  become: true
+  tasks:
+    - name: Set up pam faillock
+      lineinfile:
+        path: /etc/pam.d/common-auth
+        line: |
+          auth [success=1 default=ignore] pam_unix.so nullok_secure
+          auth requisite pam_deny.so
+          auth required pam_permit.so
+          auth [default=die] pam_faillock.so authfail deny=5 unlock_time=600
+      backup: yes
