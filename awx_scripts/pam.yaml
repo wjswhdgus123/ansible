@@ -2,11 +2,8 @@
   hosts: all
   become: true
   tasks:
-    - name: Set up pam faillock
+    - name: Update PASS_MAX_DAYS in 
       lineinfile:
-        path: /etc/pam.d/common-auth
-        line: |
-          auth [success=1 default=ignore] pam_unix.so nullok_secure
-          auth requisite pam_deny.so
-          auth required pam_permit.so
-          auth [default=die] pam_faillock.so authfail deny=5 unlock_time=600
+        path: /etc/pam.d/common-password
+        regexp: 'pam_pwquality.so'
+        line: 'pam_pwquality.so retry=3 minlen=8 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1'
