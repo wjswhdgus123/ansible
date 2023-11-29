@@ -5,3 +5,7 @@
     - name: Set new hostname
       hostname:
         name: "{{ hostname }}"
+      register: "check_log"
+  
+    - debug:
+        msg: "{{ check_log }}"
