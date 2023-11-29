@@ -2,10 +2,34 @@
   hosts: all
   become: true
   tasks:
-    - name: Add or modify the limits for maximum open files
+    - name: Add or modify the common-password
       lineinfile:
         path: /etc/pam.d/common-password
         line: |
           password        requisite                       pam_pwquality.so retry=3 minlen=8 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1
         state: present
-   
+
+    - name: faillock step 1
+      lineinfile:
+        path: /etc/pam.d/common-auth
+        insertbefore: 'pam_unix.so'
+        line: 'auth       required                                      pam_faillock.so preauth silent audit deny=4 unlock_time=300'
+
+    - name: faillock step 2
+      lineinfile:
+        path: /etc/pam.d/common-auth
+        insertafter: 'pam_unix.so'
+        line: 'auth        [default=die]                                pam_faillock.so authfail audit deny=4 unlock_time=300'
+
+    - name: faillock step 3
+      lineinfile:
+        path: /etc/pam.d/common-auth
+        insertafter: 'default=die'
+        line: 'auth        sufficient                                    pam_faillock.so authsucc audit deny=4 unlock_time=300'
+    
+    - name: faillock step 4
+      lineinfile:
+        path: /etc/pam.d/common-auth
+        insertafter: '# end of pam-auth-update config'
+        line: 'account required                        pam_faillock.so'
+
