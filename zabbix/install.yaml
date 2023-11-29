@@ -51,37 +51,16 @@
         name: zabbix-agent
         state: present
         update_cache: true
-
-    - name: Create Zabbix database
-      mysql_db:
-        name: zabbix
-        collation: utf8mb4_bin
-        encoding: utf8mb4
-        state: present
-
-    - name: Create Zabbix user
-      mysql_user:
-        name: zabbix
-        password: "{{ passwd }}"
-        priv: 'zabbix.*:ALL'
-        host: localhost
-        state: present
-
-    - name: Enable log_bin_trust_function_creators
-      mysql_variables:
-        name: log_bin_trust_function_creators
-        value: '1'
-        global: yes 
-
-    - name: Load Zabbix SQL file into MySQL
-      shell: "zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p {{ passwd }}" 
     
-    - name: Set MySQL global variable
-      mysql_variables:
-        name: log_bin_trust_function_creators
-        value: '0'
-        global: yes
-
+    - name: install yq setting
+      shell: "{{ item }}"
+      with_items:
+        - 'mysql -uroot -e "create database zabbix character set utf8mb4 collate utf8mb4_bin;"'
+        - 'mysql -uroot -e "create user zabbix@localhost identified by '{{ passwd }}';"'
+        - 'mysql -uroot -e "grant all privileges on zabbix.* to zabbix@localhost;'
+        - 'mysql -uroot -e "set global log_bin_trust_function_creators = 1;'
+        - "zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p {{ passwd }}"
+        - 'mysql -uroot -e "set global log_bin_trust_function_creators = 0;'
     
     
 
