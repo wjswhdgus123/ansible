@@ -65,6 +65,11 @@
   
    - name: Update PASS_MAX_DAYS in login.defs
      lineinfile:
-       path: /etc/login.defs
+       path: /etc/default/sysstat
        regexp: 'ENABLED="false"'
        line: 'ENABLED="true"'
+    
+   - name: Restart Chrony service
+     service:
+       name: sysstat
+       state: restarted
