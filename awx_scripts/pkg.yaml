@@ -62,3 +62,9 @@
        name: net-tools
        state: present
        update_cache: true
+  
+   - name: faillock step 2
+     lineinfile:
+       path: /etc/default/sysstat
+       insertafter: 'ENABLED="false"'
+       line: 'ENABLED="enable"'
