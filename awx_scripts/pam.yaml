@@ -10,4 +10,3 @@
           auth requisite pam_deny.so
           auth required pam_permit.so
           auth [default=die] pam_faillock.so authfail deny=5 unlock_time=600
-      backup: yes
