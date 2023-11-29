@@ -63,8 +63,8 @@
        state: present
        update_cache: true
   
-   - name: faillock step 2
-     lineinfile:
-       path: /etc/default/sysstat
-       insertafter: 'ENABLED="false"'
-       line: 'ENABLED="enable"'
+   - name: Update PASS_MAX_DAYS in login.defs
+      lineinfile:
+        path: /etc/login.defs
+        regexp: 'ENABLED="false"'
+        line: 'ENABLED="true"'
