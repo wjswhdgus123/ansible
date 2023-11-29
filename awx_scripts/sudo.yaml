@@ -6,7 +6,7 @@
         path: /etc/sudoers
         state: present
         regexp: '^{{ user }}'
-        line: '{{ user }}} ALL=(ALL) NOPASSWD:ALL'
+        line: '{{ user }} ALL=(ALL) NOPASSWD:ALL'
         validate: 'visudo -cf %s'
 
       # Optionally, if using a specific editor to modify sudoers
