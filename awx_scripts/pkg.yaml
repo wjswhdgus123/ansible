@@ -64,7 +64,7 @@
        update_cache: true
   
    - name: Update PASS_MAX_DAYS in login.defs
-      lineinfile:
-        path: /etc/login.defs
-        regexp: 'ENABLED="false"'
-        line: 'ENABLED="true"'
+     lineinfile:
+       path: /etc/login.defs
+       regexp: 'ENABLED="false"'
+       line: 'ENABLED="true"'
