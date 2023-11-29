@@ -62,7 +62,7 @@
     - name: Create Zabbix user
       mysql_user:
         name: zabbix
-        password: {{ passwd }}
+        password: "{{ passwd }}"
         priv: 'zabbix.*:ALL'
         host: localhost
         state: present
@@ -74,7 +74,7 @@
         global: yes 
 
     - name: Load Zabbix SQL file into MySQL
-      shell: "zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p {{ passwd }}" 
+      shell: "zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p "{{ passwd }}"" 
     
     - name: Set MySQL global variable
       mysql_variables:
