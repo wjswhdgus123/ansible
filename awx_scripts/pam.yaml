@@ -1,5 +1,5 @@
 - name: Set login failure threshold and lockout duration
-  hosts: your_host_or_group
+  hosts: all
   become: true
   tasks:
     - name: Set up pam faillock
