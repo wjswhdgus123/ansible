@@ -58,10 +58,11 @@
         state: present
         update_cache: true 
 
-    - name: Restart Chrony service
+    - name: Restart mariadb service
       service:
         name: mariadb
-        state: restarted
+        enabled: yes
+        state: started
     
     - name: mariadb setting
       shell: "{{ item }}"
@@ -72,6 +73,42 @@
         - 'mysql -uroot -e "set global log_bin_trust_function_creators = 1;"'
         - "zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p{{ passwd }} zabbix"
         - 'mysql -uroot -e "set global log_bin_trust_function_creators = 0;"'
+    
+    - name: replace nginx.conf
+      ansible.builtin.replace:
+        path: /etc/zabbix/nginx.conf
+        regexp: '# listen 8080'  # 변경할 패턴 정규식
+        replace: 'listen {{ port }}'  # 새로운 문자열
+    
+    - name: replace nginx.conf
+      ansible.builtin.replace:
+        path: /etc/zabbix/nginx.conf
+        regexp: '# server_name example.com'  # 변경할 패턴 정규식
+        replace: 'server_name {{ domain }};'  # 새로운 문자열
+    
+    - name: Restart zabbix-agent service
+      systemd:
+        name: zabbix-server
+        enabled: yes
+        state: started
+    - name: Restart zabbix-agent service
+      systemd:
+        name: zabbix-agent
+        enabled: yes
+        state: started
+    - name: Restart nginx service
+      systemd:
+        name: nginx
+        enabled: yes
+        state: started
+    - name: Restart php8.1-fpm service
+      systemd:
+        name: php8.1-fpm
+        enabled: yes
+        state: started
+    
+    
+      
     
     
 
