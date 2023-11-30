@@ -75,6 +75,19 @@
         - 'mysql -uroot -e "set global log_bin_trust_function_creators = 1;"'
         - "zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p{{ passwd }} zabbix"
         - 'mysql -uroot -e "set global log_bin_trust_function_creators = 0;"'
+      ignore_errors: yes
+
+    - name: Replace server_name in nginx.conf
+      replace:
+        path: /etc/zabbix/nginx.conf  # 파일 경로
+        regexp: '^#( *server_name +)example\.com(;)?'  # 검색할 패턴
+        replace: '\1   {{ domain }};'  # 변경할 내용
+
+    - name: replace nginx.conf
+      ansible.builtin.replace:
+        path: /etc/zabbix/nginx.conf
+        regexp: '^#( *listen +)8080(;)?'  # 변경할 패턴 정규식
+        replace: ''\1   {{ port }};'  # 새로운 문자열
 
     
     - name: Restart zabbix-agent service
