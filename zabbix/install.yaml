@@ -89,6 +89,18 @@
         regexp: '^#( *listen +)8080(;)?'  # 변경할 패턴 정규식
         replace: '\1   {{ port }};'  # 새로운 문자열
 
+    - name: Replace server_name in nginx.conf
+      replace:
+        path: /etc/zabbix/nginx.conf  # 파일 경로
+        regexp: '^# DBPassword='  # 검색할 패턴
+        replace: '^# DBPassword={{ passwd }}'  # 변경할 내용
+
+    - name: replace nginx.conf
+      ansible.builtin.replace:
+        path: /etc/zabbix/nginx.conf
+        regexp: '^# DBPort='  # 변경할 패턴 정규식
+        replace: 'DBSPort=3306'  # 새로운 문자열
+
     
     - name: Restart zabbix-agent service
       systemd:
