@@ -5,4 +5,4 @@
       replace:
         path: /etc/zabbix/nginx.conf  # 파일 경로
         regexp: '^#( *server_name +)example\.com(;)?'  # 검색할 패턴
-        replace: '\1server_name   example.com;'  # 변경할 내용
+        replace: '\1   example.com;'  # 변경할 내용
