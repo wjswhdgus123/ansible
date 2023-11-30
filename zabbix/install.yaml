@@ -80,7 +80,7 @@
       ansible.builtin.replace:
         path: /etc/zabbix/nginx.conf
         regexp: '^#( *listen +)8080(;)?'  # 변경할 패턴 정규식
-        replace: 'listen {{ port }}'  # 새로운 문자열
+        replace: 'listen {{ port }};'  # 새로운 문자열
     
     - name: replace nginx.conf
       ansible.builtin.replace:
