@@ -67,6 +67,7 @@
     - name: mariadb setting
       shell: "{{ item }}"
       with_items:
+        - "mysql -uroot -e \"drop database zabbix;\""
         - "mysql -uroot -e \"create database zabbix character set utf8mb4 collate utf8mb4_bin;\""
         - "mysql -uroot -e \"create user zabbix@localhost identified by '{{ passwd }}';\""
         - 'mysql -uroot -e "grant all privileges on zabbix.* to zabbix@localhost;"'
