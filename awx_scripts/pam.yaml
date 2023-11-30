@@ -1,6 +1,6 @@
 - name: Set login failure threshold and lockout duration
   hosts: all
-  become: true
+  become: yes
   tasks:
     - name: Add or modify the common-password
       lineinfile:
