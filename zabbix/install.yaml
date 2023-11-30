@@ -87,7 +87,7 @@
       ansible.builtin.replace:
         path: /etc/zabbix/nginx.conf
         regexp: '^#( *listen +)8080(;)?'  # 변경할 패턴 정규식
-        replace: ''\1   {{ port }};'  # 새로운 문자열
+        replace: '\1   {{ port }};'  # 새로운 문자열
 
     
     - name: Restart zabbix-agent service
