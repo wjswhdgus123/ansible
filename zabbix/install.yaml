@@ -46,7 +46,7 @@
         state: present
         update_cache: true
     
-   - name: install zabbix-agent
+    - name: install zabbix-agent
       apt:
         name: zabbix-agent
         state: present
@@ -63,7 +63,7 @@
         name: mariadb
         state: restarted
     
-    - name: install yq setting
+    - name: mariadb setting
       shell: "{{ item }}"
       with_items:
         - 'mysql -uroot -e "create database zabbix character set utf8mb4 collate utf8mb4_bin;"'
