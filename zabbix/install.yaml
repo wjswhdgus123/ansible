@@ -46,11 +46,22 @@
         state: present
         update_cache: true
     
-    - name: install zabbix-agent
+   - name: install zabbix-agent
       apt:
         name: zabbix-agent
         state: present
-        update_cache: true
+        update_cache: true 
+
+    - name: install mariadb-server
+      apt:
+        name: mariadb-server
+        state: present
+        update_cache: true 
+
+    - name: Restart Chrony service
+      service:
+        name: mariadb
+        state: restarted
     
     - name: install yq setting
       shell: "{{ item }}"

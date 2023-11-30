@@ -134,6 +134,9 @@
       with_items:
         - "echo 'y'|kubeadm reset"
         - "kubeadm join vipaddr:16443 --token {{token_var.stdout}} --discovery-token-ca-cert-hash sha256:{{hash_var.stdout}}  --control-plane --certificate-key {{cert_var.stdout}}"
+        - "mkdir -p $HOME/.kube"
+        - "cp -a /etc/kubernetes/admin.conf $HOME/.kube/config"
+        - "chown $(id -u):$(id -g) $HOME/.kube/config"
 
     - debug:
         msg: "{{ cert_var.stdout}}"
