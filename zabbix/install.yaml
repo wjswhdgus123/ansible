@@ -83,7 +83,7 @@
     - name: replace nginx.conf
       ansible.builtin.replace:
         path: /etc/zabbix/nginx.conf
-        regexp: '# server_name example.com'  # 변경할 패턴 정규식
+        regexp: '# server_name example\.com'  # 변경할 패턴 정규식
         replace: 'server_name {{ domain }};'  # 새로운 문자열
     
     - name: Restart zabbix-agent service
