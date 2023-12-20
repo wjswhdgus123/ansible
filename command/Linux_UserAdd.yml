@@ -1,21 +1,9 @@
----
-- hosts: all
-  
-  tasks:
-  - name: New System User
-    user: name="{{ add_user_name }}"
-        password="{{ upassword | password_hash('sha512') }}"
-        shell=/bin/bash
-    become: yes
-    become_user: root
-
-  - name: Add user to sudoers
-    lineinfile: dest=/etc/sudoers
-        regexp="{{ add_user_name }}[\s\x20]+[ALL]+"
-        line="{{ add_user_name }}   ALL=(ALL)   ALL"
-        state=present
-    become: yes
-    become_user: root
-    
-  - name: Expiring password for user "{{ add_user_name }}"
-    shell: chage -d 0 "{{ add_user_name }}"
+- name: Create User
+  hosts: all
+  become: yes
+   tasks:
+    - name: "{{ user }} 유저 생성"
+      user:
+        name: "{{ user }}"
+        password: "{{ pwd | password_hash('sha512') }}" # 비밀번호 설정 (암호화된 형태로 저장)
+        state: present # 존재하지 않을 경우에만 유저 생성
