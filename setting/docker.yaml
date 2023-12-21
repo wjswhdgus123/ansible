@@ -1,8 +1,31 @@
-- hosts: all
-  become: yes
+- name: Install Docker on Ubuntu 22.04
+  hosts: all
+  become: yes  # 관리자 권한 필요
+
   tasks:
-   - name: Update and upgrade apt packages
-     apt:
-       upgrade: yes
-       update_cache: yes
-       cache_valid_time: 86400 #One day
+    - name: Install required system packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+        - lsb-release
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+        filename: docker-ce
+
+    - name: Update APT and install Docker
+      apt:
+        name: docker-ce
+        state: present
