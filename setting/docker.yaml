@@ -13,6 +13,7 @@
         - curl
         - gnupg
         - lsb-release
+        - glusterfs-client
 
     - name: Add Docker GPG key
       apt_key:
@@ -28,4 +29,9 @@
     - name: Update APT and install Docker
       apt:
         name: docker-ce
+        state: present
+
+    - name: Update APT and install Docker
+      apt:
+        name: docker-compose-plugin
         state: present
