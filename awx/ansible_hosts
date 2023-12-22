@@ -19,3 +19,8 @@
 
 [monitoring]
 192.168.110.50 ansible_ssh_user=ubuntu
+
+[docker]
+192.168.110.61 ansible_ssh_user=ubuntu
+192.168.110.62 ansible_ssh_user=ubuntu
+192.168.110.63 ansible_ssh_user=ubuntu
