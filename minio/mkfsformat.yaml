@@ -4,4 +4,9 @@
     - name: Create partitions using parted
       command: "parted -s {{ item.disk }} mklabel gpt mkpart primary 0% {{ item.size }}"
       loop: "{{ disk_partitions }}"
+    
+    
+    - name: Format disks with xfs
+      command: "mkfs.xfs -L {{ item.disk_label }} /dev/{{ item.disk_path }}"
+      loop: "{{ disk_info }}"
    
