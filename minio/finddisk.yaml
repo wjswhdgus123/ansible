@@ -9,4 +9,4 @@
       register: disk_info
 
     - debug:
-        msg: "{{ disk_info.stdout_lines }}"
+        msg: "{{ disk_info.stdout_lines[0] }}"
