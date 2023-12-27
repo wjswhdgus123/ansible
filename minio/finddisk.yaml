@@ -10,7 +10,7 @@
       register: disk_pvs
 
     - debug:
-        msg: "Unallocated disks (fdisk): {{ disk_fdisk.stdout_lines }}"
+        msg: {{ disk_fdisk.stdout_lines }}"
     
     - debug:
-        msg: "Unallocated disks (pvs): {{ disk_pvs.stdout_lines }}"
+        msg: "LVM can't use: {{ disk_pvs.stdout_lines }}"
