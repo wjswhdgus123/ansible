@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Get unallocated physical disks
+      shell: fdisk -l | grep "Disk /dev/" | grep -Ev "mapper|identifier|Disklabel"
+
+      register: disk_info
+
+    - debug:
+        msg: "{{ disk_info.stdout_lines }}"
