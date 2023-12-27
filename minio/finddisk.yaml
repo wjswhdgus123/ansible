@@ -2,7 +2,10 @@
   become: yes
   tasks:
     - name: Get unallocated physical disks
-      shell: fdisk -l | grep "Disk /dev/" | grep -Ev "mapper|identifier|Disklabel|loop"
+      shell: { item }
+      loop:
+        - fdisk -l | grep "Disk /dev/" | grep -Ev "mapper|identifier|Disklabel|loop" 
+        - pvs |awk '{print $1}' |grep dev
 
       register: disk_info
 
