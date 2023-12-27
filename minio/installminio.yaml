@@ -21,7 +21,12 @@
         path: "/usr/local/bin/mc"
         mode: "u+x,g+x"
     
-     
+
+    - name: Create an empty /etc/default/minio file
+      copy:
+        content: ""
+        dest: /etc/default/minio 
+        
     - name: Append content to /etc/default/minio
       lineinfile:
         path: /etc/default/minio
