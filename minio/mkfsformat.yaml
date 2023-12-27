@@ -5,8 +5,21 @@
       command: "parted -s {{ item.disk }} mklabel gpt mkpart primary 0% {{ item.size }}"
       loop: "{{ disk_partitions }}"
     
-    
-    - name: Format disks with xfs
-      command: "mkfs.xfs -L {{ item.disk_label }} /dev/{{ item.disk_path }}"
+    - name: Format disks with xfs and create mount points
+      command: "mkfs.xfs -L {{ item.disk_label }} {{ item.disk_path }}"
       loop: "{{ disk_info }}"
+      register: mkfs_output
+
+    - name: Create mount directories
+      file:
+        path: "{{ item.item.mount_point }}"
+        state: directory
+      loop: "{{ mkfs_output.results }}"
+
+    - name: Add entries to fstab
+      lineinfile:
+        path: "/etc/fstab"
+        line: "{{ item.item.disk_label }} {{ item.item.mount_point }} xfs defaults 0 0"
+        create: yes
+      loop: "{{ mkfs_output.results }}"
    
