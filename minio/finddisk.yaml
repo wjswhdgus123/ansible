@@ -1,12 +1,16 @@
 - hosts: all
   become: yes
   tasks:
-    - name: Get unallocated physical disks
-      shell: "{{ item }}"
-      with_items:
-        - "fdisk -l | grep \"Disk /dev/\" | grep -Ev \"mapper|identifier|Disklabel|loop\""
-        - "pvs |awk '{print $1}' |grep dev"
-      register: disk_info
+    - name: Get unallocated physical disks using fdisk
+      shell: "fdisk -l | grep \"Disk /dev/\" | grep -Ev \"mapper|identifier|Disklabel|loop\""
+      register: disk_fdisk
+
+    - name: Get unallocated physical disks using pvs
+      shell: "pvs | awk '{print $1}' | grep dev"
+      register: disk_pvs
 
     - debug:
-        msg: "{{ disk_info.stdout_lines[0] }}"
+        msg: "Unallocated disks (fdisk): {{ disk_fdisk.stdout_lines }}"
+    
+    - debug:
+        msg: "Unallocated disks (pvs): {{ disk_pvs.stdout_lines }}"
