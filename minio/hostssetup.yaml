@@ -1,0 +1,11 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Add entries to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hosts }}"
+        insertafter: EOF
+      loop: "{{ hosts }}"
+
+        
