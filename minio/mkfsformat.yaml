@@ -7,7 +7,7 @@
       when: disk_partitions is defined and disk_partitions | length > 0
     
     - name: Format disks with xfs and create mount points
-      command: "mkfs.xfs -L {{ item.disk_label }} {{ item.disk_path }}"
+      command: "mkfs.xfs -f -L {{ item.disk_label }} {{ item.disk_path }}"
       loop: "{{ disk_info }}"
       register: mkfs_output
       when: disk_info is defined and disk_info | length > 0
