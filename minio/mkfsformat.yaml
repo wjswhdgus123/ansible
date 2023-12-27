@@ -23,7 +23,7 @@
     - name: Add entries to fstab
       lineinfile:
         path: "/etc/fstab"
-        line: "{{ item.item.disk_label }} {{ item.item.mount_point }} xfs defaults 0 1"
+        line: "LABEL={{ item.item.disk_label }} {{ item.item.mount_point }} xfs defaults 0 1"
         create: yes
       loop: "{{ mkfs_output.results }}"
       when: mkfs_output is defined and mkfs_output.results | length > 0
