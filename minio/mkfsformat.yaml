@@ -1,0 +1,6 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: Format disks with xfs
+      command: "mkfs.xfs -L {{ item.split(':')[1] }} /dev/{{ item.split(':')[0] }}"
+      loop: "{{ disks }}"
