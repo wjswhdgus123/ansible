@@ -10,7 +10,7 @@
       register: disk_pvs
 
     - debug:
-        msg: {{ disk_fdisk.stdout_lines }}"
+        msg: "{{ disk_fdisk.stdout_lines }}"
     
     - debug:
         msg: "LVM can't use: {{ disk_pvs.stdout_lines }}"
