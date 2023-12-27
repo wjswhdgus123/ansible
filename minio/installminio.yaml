@@ -20,3 +20,15 @@
       file:
         path: "/usr/local/bin/mc"
         mode: "u+x,g+x"
+    
+     
+    - name: Append content to /etc/default/minio
+      lineinfile:
+        path: /etc/default/minio
+        line: "{{ item }}"
+        insertafter: EOF
+      loop:
+        - "MINIO_VOLUMES=\"{{ minio_volumes }}\""
+        - "MINIO_OPTS=\"--address {{ ansible_default_ipv4.address }}:9000 --console-address {{ ansible_default_ipv4.address }}:9001\""
+        - "MINIO_ROOT_USER={{ minio_root_user }}"
+        - "MINIO_ROOT_PASSWORD={{ minio_root_password }}"
