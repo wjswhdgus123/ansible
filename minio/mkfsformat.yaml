@@ -1,6 +1,7 @@
 - hosts: all
   become: yes
   tasks:
-  - name: Format disks with xfs
-      command: "mkfs.xfs -L {{ item.split(':')[1] }} /dev/{{ item.split(':')[0] }}"
-      loop: "{{ disks }}"
+    - name: Create partitions using parted
+      command: "parted -s {{ item.disk }} mklabel gpt mkpart primary 0% {{ item.size }}"
+      loop: "{{ disk_partitions }}"
+   
