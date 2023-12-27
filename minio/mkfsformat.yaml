@@ -2,8 +2,8 @@
   become: yes
   tasks:
     - name: Format disks with xfs and create mount points
-      command: "umount {{ item.item.mount_point }}"
-      loop: "{{ mkfs_output.results }}"
+      command: "umount {{ item.mount_point }}"
+      loop: "{{ disk_info }}"
       register: mkfs_output
       when: disk_info is defined and disk_info | length > 0
       ignore_errors: yes
@@ -14,9 +14,8 @@
       when: disk_partitions is defined and disk_partitions | length > 0
     
     - name: Format disks with xfs and create mount points
-      command: "mkfs.xfs -f -L {{ item.disk_label }} /dev/{{ item.disk_path }}"
-      loop: "{{ disk_info }}"
-      register: mkfs_output
+      command: "mkfs.xfs -f -L {{ item.item.disk_label }} /dev/{{ item.item.disk_path }}"
+      loop: "{{ mkfs_output.results }}"
       when: disk_info is defined and disk_info | length > 0
 
 
