@@ -1,7 +1,7 @@
 - hosts: all
   become: yes
   tasks:
-    - name: umount
+    - name: umount DISK
       command: "umount {{ item.mount_point }}"
       loop: "{{ disk_info }}"
       register: mkfs_output
@@ -33,6 +33,12 @@
         create: yes
       loop: "{{ mkfs_output.results }}"
       when: mkfs_output is defined and mkfs_output.results | length > 0
+    
+    - name: mount disk 
+      command: "mount {{ item.item.mount_point }}"
+      loop: "{{ mkfs_output.results }}"
+      when: disk_info is defined and disk_info | length > 0
+      ignore_errors: yes
     
   
     - name: Create MinIO user group
