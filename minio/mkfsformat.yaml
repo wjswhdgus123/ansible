@@ -1,6 +1,13 @@
 - hosts: all
   become: yes
   tasks:
+    - name: Format disks with xfs and create mount points
+      command: "umount {{ item.item.mount_point }}"
+      loop: "{{ mkfs_output.results }}"
+      register: mkfs_output
+      when: disk_info is defined and disk_info | length > 0
+      ignore_errors: yes
+
     - name: Create partitions using parted
       command: "parted -s {{ item.disk }} mklabel gpt mkpart primary 0% {{ item.size }}"
       loop: "{{ disk_partitions }}"
