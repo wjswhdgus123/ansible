@@ -1,7 +1,7 @@
 - hosts: all
   become: yes
   tasks:
-    - name: Format disks with xfs and create mount points
+    - name: umount
       command: "umount {{ item.mount_point }}"
       loop: "{{ disk_info }}"
       register: mkfs_output
