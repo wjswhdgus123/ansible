@@ -27,4 +27,27 @@
         create: yes
       loop: "{{ mkfs_output.results }}"
       when: mkfs_output is defined and mkfs_output.results | length > 0
+    
+  
+    - name: Create MinIO user group
+      group:
+        name: minio-user
+        state: present
+        system: yes
+
+    - name: Create MinIO system user
+      user:
+        name: minio-user
+        comment: "MinIO System User"
+        system: yes
+        group: minio-user
+        shell: /bin/false  # 로그인 쉘 없는 시스템 계정으로 설정
+
+    - name: Change ownership of directories
+      file:
+        path: "{{ item.item.mount_point }}"
+        owner: minio-user
+        group: minio-user
+        recurse: yes
+      loop: "{{ mkfs_output.results }}"
    

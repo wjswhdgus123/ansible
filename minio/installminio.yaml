@@ -1,0 +1,22 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Download MinIO server .deb package
+      get_url:
+        url: "https://dl.min.io/server/minio/release/linux-amd64/archive/minio_20231025063325.0.0_amd64.deb"
+        dest: "/tmp/minio.deb"
+
+    - name: Install MinIO server .deb package
+      apt:
+        deb: "/tmp/minio.deb"
+        state: present
+
+    - name: Download MinIO client (mc)
+      get_url:
+        url: "https://dl.min.io/client/mc/release/linux-amd64/mc"
+        dest: "/usr/local/bin/mc"
+
+    - name: Make MinIO client executable
+      file:
+        path: "/usr/local/bin/mc"
+        mode: "u+x,g+x"
