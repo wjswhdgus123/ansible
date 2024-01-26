@@ -5,3 +5,19 @@ metadata:
   name: awx-demo
 spec:
   service_type: LoadBalancer
+  postgres_resource_requirements:
+    requests:
+      cpu: 4G
+      memory: 2Gi
+    limits:
+      cpu: '4'
+      memory: 4Gi
+  postgres_storage_requirements:
+    requests:
+      storage: 10Gi
+    limits:
+      storage: 30Gi
+  
+  postgres_extra_args:
+    - '-c'
+    - 'max_connections=1000'
