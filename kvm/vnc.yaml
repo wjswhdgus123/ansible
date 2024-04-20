@@ -1,0 +1,62 @@
+- hosts: all
+  become: yes
+  tasks:
+   - name: Update and upgrade apt packages
+     apt:
+       upgrade: yes
+       update_cache: yes
+       cache_valid_time: 86400 #One day
+
+   - name: install xfce4 
+     apt:
+       name: xfce4 
+       state: present
+       update_cache: true
+   - name: install xfce4-goodies  
+     apt:
+       name: xfce4-goodies 
+       state: present
+       update_cache: true
+   - name: install tigervnc-common
+     apt:
+       name: tigervnc-common  
+       state: present
+       update_cache: true
+   - name: install tigervnc-standalone-server
+     apt:
+       name: tigervnc-standalone-server 
+       state: present
+       update_cache: true
+
+   
+   - name: Create xstartup file
+     file:
+       path: /etc/vnc/xstartup
+       state: touch
+       mode: "0755"
+       owner: root
+       group: root
+
+    - name: Write to xstartup file
+      blockinfile:
+        path: /etc/vnc/xstartup
+        block: |
+          #!/bin/sh
+          test x"/bin/bash" = x"" && SHELL=/bin/bash
+          test x""     = x"" && set -- default
+          unset SESSION_MANAGER
+          unset DBUS_SESSION_BUS_ADDRESS
+          vncconfig -iconic &
+          "/bin/bash" -l << EOF
+          export XDG_SESSION_TYPE=x11
+          export GNOME_SHELL_SESSION_MODE=ubuntu
+          dbus-launch --exit-with-session gnome-session --session=ubuntu
+          EOF
+          #vncserver -kill localhost:10.0
+
+   - name: install vnc setting
+     shell: "{{ item }}"
+     with_items:
+       - "virsh net-define /root/host-bridge.xml"
+       - "virsh net-start host-bridge"
+       - "virsh net-autostart host-bridge"

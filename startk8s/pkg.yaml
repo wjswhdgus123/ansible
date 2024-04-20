@@ -48,6 +48,12 @@
        name: nfs-common
        state: present
        update_cache: true
+   
+   - name: install gpg
+     apt:
+       name: gpg
+       state: present
+       update_cache: true
 
    - name: add Docker apt-key
      apt_key:
@@ -65,16 +71,20 @@
        state: latest
        update_cache: true
 
-   - name: add Kubernets apt-key
-     apt_key:
-       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-       state: present
+    - name: Add Kubernetes repository key
+      shell: |
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        executable: /bin/bash
 
-   - name: Add Kubernetes Repository
-     apt_repository:
-       repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-       state: present
-
+    - name: Add Kubernetes repository to /etc/apt/sources.list.d/kubernetes.list
+      lineinfile:
+        path: /etc/apt/sources.list.d/kubernetes.list
+        line: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /'
+        create: yes
+        owner: root
+        group: root
+        mode: '0644'
    - name: Update apt and install kubelet
      apt:
        name: kubelet
