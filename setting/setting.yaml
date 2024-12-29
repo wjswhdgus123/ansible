@@ -2,10 +2,6 @@
 - hosts: all
   become: true
   tasks:
-    - name: Add host key to known_hosts
-      known_hosts:
-        name: "{{ inventory_hostname }}"
-        key: "{{ lookup('pipe', 'ssh-keyscan -H ' + inventory_hostname) }}"
     - name: Update all packages
       apt:
         update_cache: yes

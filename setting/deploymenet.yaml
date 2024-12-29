@@ -6,7 +6,7 @@
       user:
         name: ansible
         comment: 'Ansible User'
-        groups: sudo  # 필요에 따라 다른 그룹 추가
+        groups:   # 필요에 따라 다른 그룹 추가
         shell: /bin/bash
         createhome: yes
         state: present
