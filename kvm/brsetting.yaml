@@ -19,7 +19,7 @@
                     dhcp4: no
             bridges:
               br0:
-                interfaces: [ {{ ansible_default_ipv4.interface }} ]
+                interfaces: [ "{{ ansible_default_ipv4.interface }}" ]
                 dhcp4: no
                 addresses: [ "{{ ansible_default_ipv4.address }}/{{ ansible_default_ipv4.netmask }}" ]
                 gateway4: "{{ ansible_default_ipv4.gateway }}"
