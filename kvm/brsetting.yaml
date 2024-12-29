@@ -5,7 +5,7 @@
     - name: Print ansible_default_ipv4 information
       debug:
         var: ansible_default_ipv4
-        
+
     - name: Configure bridge network with default IPv4
       block:
         - name: Create netplan configuration file
@@ -27,14 +27,14 @@
                       addresses: [8.8.8.8, 8.8.4.4]
             dest: /etc/netplan/01-bridge-network.yaml
         
-        - name: Apply netplan configuration
-          command: mv /etc/netplan/50-cloud-init.yaml /etc/netplan/cloud-init.yaml_old
-
         - name: Disable cloud-init network configuration
           lineinfile:
             path: /etc/cloud/cloud.cfg
             line: '#network: {config: disabled}'
           state: present
-        
+
+        - name: Apply netplan configuration
+          command: rm -fr /etc/netplan/50-cloud-init.yaml
+
         - name: Apply netplan configuration
           command: netplan --debug apply
