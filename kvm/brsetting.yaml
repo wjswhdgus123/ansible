@@ -21,20 +21,20 @@
                   br0:
                     interfaces: [{{ ansible_default_ipv4.interface }}]
                     dhcp4: no
-                    addresses: [{{ ansible_default_ipv4.address}}/{{ ansible_default_ipv4.prefix}}]  # 브릿지 인터페이스에 다른 IP 주소 할당
+                    addresses: [{{ ansible_default_ipv4.address }}/24]  # 브릿지 인터페이스에 다른 IP 주소 할당 (예시)
                     gateway4: 192.168.110.1
                     nameservers:
                       addresses: [8.8.8.8, 8.8.4.4]
             dest: /etc/netplan/01-bridge-network.yaml
-        
+
+        - name: Rename 50-cloud-init.yaml
+          command: mv /etc/netplan/50-cloud-init.yaml /etc/netplan/cloud-init.yaml_old
+
         - name: Disable cloud-init network configuration
           lineinfile:
             path: /etc/cloud/cloud.cfg
             line: '#network: {config: disabled}'
-          state: present
-
-        - name: Apply netplan configuration
-          command: rm -fr /etc/netplan/50-cloud-init.yaml
+            state: present
 
         - name: Apply netplan configuration
           command: netplan --debug apply
