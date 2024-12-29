@@ -71,12 +71,7 @@
         name: sudo
         state: present
 
-    - name: Create user account
-      user:
-        name: ubuntu
-        groups: wheel,sudo
-        shell: /bin/bash
-        append: yes
+   
 
     - name: Configure SSH
       lineinfile:
