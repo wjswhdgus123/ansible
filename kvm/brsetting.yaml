@@ -25,7 +25,7 @@
                 gateway4: {{ ansible_default_ipv4.gateway }}
                 nameservers:
                   addresses: [8.8.8.8, 8.8.4.4]
-        dest: /etc/netplan/01-bridge-network.yaml
+          dest: /etc/netplan/01-bridge-network.yaml
       when: ansible_default_ipv4.interface != 'br0'
 
     - name: Rename 50-cloud-init.yaml
