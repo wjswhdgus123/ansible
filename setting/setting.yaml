@@ -119,3 +119,4 @@
             line: 'root hard nofile 65536'
             state: present
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    

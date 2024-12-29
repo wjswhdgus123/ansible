@@ -1,0 +1,40 @@
+- hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Print ansible_default_ipv4 information
+      debug:
+        var: ansible_default_ipv4
+        
+    - name: Configure bridge network with default IPv4
+      block:
+        - name: Create netplan configuration file
+          copy:
+            content: |
+              network:
+                version: 2
+                renderer: networkd
+                ethernets:
+                  {{ ansible_default_ipv4.interface }}:
+                    dhcp4: no
+                bridges:
+                  br0:
+                    interfaces: [{{ ansible_default_ipv4.interface }}]
+                    dhcp4: no
+                    addresses: [{{ ansible_default_ipv4.address}}/{{ ansible_default_ipv4.prefix}}]  # 브릿지 인터페이스에 다른 IP 주소 할당
+                    gateway4: 192.168.110.1
+                    nameservers:
+                      addresses: [8.8.8.8, 8.8.4.4]
+            dest: /etc/netplan/01-bridge-network.yaml
+        
+        - name: Apply netplan configuration
+          command: mv /etc/netplan/50-cloud-init.yaml /etc/netplan/cloud-init.yaml_old
+
+        - name: Disable cloud-init network configuration
+          lineinfile:
+            path: /etc/cloud/cloud.cfg
+            line: '#network: {config: disabled}'
+          state: present
+        
+        - name: Apply netplan configuration
+          command: netplan --debug apply
