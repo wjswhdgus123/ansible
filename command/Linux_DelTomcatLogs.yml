@@ -1,7 +1,0 @@
----
-- hosts: all
-  
-  tasks:
-    - name: Delete /usr/local/tomcat/logs
-      command: "find /usr/local/tomcat/logs -name '*' -mtime +30 -delete"
-      

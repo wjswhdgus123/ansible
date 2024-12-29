@@ -1,8 +1,0 @@
-- hosts: all
-
-  tasks:
-    - name: rsync /opt/atlassian/confluence/
-      command: rsync -avPz --delete --stats -l -t -e ssh root@112.175.57.156:/opt/atlassian/confluence/ /opt/atlassian/confluence/
-     
-    - name: rsync /var/atlassian/application-data/confluence/
-      command: rsync -avPz --delete --stats -l -t -e ssh root@112.175.57.156:/var/atlassian/application-data/confluence/ /var/atlassian/application-data/confluence/

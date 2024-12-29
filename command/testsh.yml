@@ -1,7 +1,0 @@
-- hosts: all
-
-  tasks:
-  - name: Add /etc/hosts host
-    shell: ip addr | grep "inet " | grep brd | awk '{print $2}' | awk -F/ '{print $1}' | egrep "172.16|112.175.57|183.111.159|124.137.15" >> /etc/hosts; sed -i 's/$/          '$HOSTNAME'/g' /etc/hosts
-    become: yes
-    become_user: root

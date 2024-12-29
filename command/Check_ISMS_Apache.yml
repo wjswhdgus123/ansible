@@ -1,8 +1,0 @@
----
-
-  tasks:
-    - name: Read the tomcat confing file
-      shell: "sed -n '/Options Indexes MultiViews/p' {{ file_path }}"
-      register: result
-      ignore_errors: True
-    - debug: var=result

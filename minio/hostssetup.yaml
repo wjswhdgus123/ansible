@@ -1,9 +1,0 @@
-- hosts: all
-  become: yes
-  tasks:
-    - name: Add hosts to /etc/hosts
-      lineinfile:
-        path: "/etc/hosts"
-        line: "{{ item.ip }} {{ item.hostname }}"
-        create: yes
-      loop: "{{ hosts_list }}"

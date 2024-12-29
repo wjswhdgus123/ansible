@@ -1,5 +1,0 @@
-- hosts: all
-
-  tasks:
-    - name: rsync /cifs/EDUWILL-NAS250/refund
-      command: rsync -avpz --stats -t /cifs/TS451/refund /cifs/EDUWILL-NAS250/refund

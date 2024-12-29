@@ -1,9 +1,0 @@
----
-- hosts: all
-  
-  tasks:
-  - name: change user commands
-    lineinfile: dest=/etc/sudoers
-        regexp="^{{ user_name }}"
-        line="{{ user_name }}   ALL=(ALL)   {{ user_command }}"
-        state=present

@@ -1,5 +1,0 @@
-- hosts: all
-
-  tasks:
-    - name: Test Command
-      command: sh /home/hskim4/test.sh

@@ -1,9 +1,0 @@
----
-- hosts: all
-  
-  tasks:
-    - name: Check apache, tomcat version
-      shell: "httpd -v"
-      register: result
-      ignore_errors: True
-    - debug: var=result

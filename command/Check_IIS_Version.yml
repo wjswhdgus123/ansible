@@ -1,6 +1,0 @@
----
-- hosts: all
-  
-  tasks:
-    - name: Check IIS Version
-      win_shell: "powershell.exe 'get-itemproperty HKLM:\\SOFTWARE\\Microsoft\\InetStp\\ | select setupstring,versionstring'"

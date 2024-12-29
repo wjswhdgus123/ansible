@@ -1,6 +1,0 @@
----
-- hosts: all
-  
-  tasks:
-  - name: ping test gogogogogo
-    win_ping:
