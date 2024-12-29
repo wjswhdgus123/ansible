@@ -58,18 +58,7 @@
         state: present
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
-    - name: Configure chrony
-      lineinfile:
-        path: /etc/chrony.conf
-        line: 'server 0.pool.ntp.org iburst'
-        state: present
-
-    - name: Enable and start chrony service
-      service:
-        name: chronyd
-        state: started
-        enabled: yes
-
+   
     - name: Add sudo group to sudoers file
       lineinfile:
         path: /etc/sudoers
