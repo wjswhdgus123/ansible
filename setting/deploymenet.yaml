@@ -1,0 +1,44 @@
+---
+- hosts: deplyment
+  become: true
+  tasks:
+    - name: Create ansible user
+      user:
+        name: ansible
+        comment: 'Ansible User'
+        groups: sudo  # 필요에 따라 다른 그룹 추가
+        shell: /bin/bash
+        createhome: yes
+        state: present
+    - name: Install Ansible (Debian/Ubuntu)
+      apt:
+        name: ansible
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Install Ansible (CentOS/RedHat)
+      yum:
+        name: ansible
+        state: present
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+    - name: Generate SSH key pair
+      user:
+        name: ansible  # 사용자 이름 변경 가능
+        generate_ssh_key: yes
+        ssh_key_bits: 4096
+        ssh_key_file: .ssh/id_rsa
+
+    - name: Copy public key to authorized_keys
+      authorized_key:
+        user: ansible  # 사용자 이름 변경 가능
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: Configure SSH config
+      blockinfile:
+        path: ~/.ssh/config
+        create: yes
+        block: |
+          Host *
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
