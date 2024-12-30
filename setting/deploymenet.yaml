@@ -29,16 +29,4 @@
         ssh_key_bits: 4096
         ssh_key_file: .ssh/id_rsa
 
-    - name: Copy public key to authorized_keys
-      authorized_key:
-        user: ansible  # 사용자 이름 변경 가능
-        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-
-    - name: Configure SSH config
-      blockinfile:
-        path: ~/.ssh/config
-        create: yes
-        block: |
-          Host *
-            StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null
+    
