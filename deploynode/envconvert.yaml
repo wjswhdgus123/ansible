@@ -1,0 +1,118 @@
+- hosts: localhost
+  tasks:
+    - name: offline.yml
+      blockinfile:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        block: |
+          registry_host: "{{ lookup('env', 'IMAGE') }}"
+          files_repo: "{{ lookup('env', 'FILE') }}"
+          ubuntu_repo: "{{ lookup('env', 'APT') }}"
+        insertafter: '# ubuntu_repo: "http://myinternalubunturepo"'
+    
+    - name: offline.yml kube_image_repo
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# kube_image_repo: "\{\{ registry_host \}\}"$'
+        replace: 'kube_image_repo: "\{\{ registry_host \}\}/registry.k8s.io"'
+    - name: offline.yml gcr_image_repo
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# gcr_image_repo: "\{\{ registry_host \}\}"$'
+        replace: 'gcr_image_repo: "\{\{ registry_host \}\}/gcr.io"'
+   
+    - name: offline.yml github_image_repo
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# github_image_repo: "\{\{ registry_host \}\}"$'
+        replace: 'github_image_repo: "\{\{ registry_host \}\}/ghcr.io"'
+    - name: offline.yml docker_image_repo
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# docker_image_repo: "\{\{ registry_host \}\}"$'
+        replace: 'docker_image_repo: "\{\{ registry_host \}\}/docker.io"'
+    - name: offline.yml quay_image_repo
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# quay_image_repo: "\{\{ registry_host \}\}"$'
+        replace: 'quay_image_repo: "\{\{ registry_host \}\}/quay.io"'
+    - name: offline.yml gcr_image_repo
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '\\'
+        replace: ''
+    - name: offline.yml kubeadm_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# kube'
+        replace: 'kube'
+    
+    - name: offline.yml cni_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# cni_download_url'
+        replace: 'cni_download_url'
+  
+    - name: offline.yml crictl_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# crictl_download_url'
+        replace: 'crictl_download_urlurl'
+   
+    - name: offline.yml etcd_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# etcd_download_url'
+        replace: 'etcd_download_url'
+
+    - name: offline.yml calicoctl_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# calicoctl_download_url'
+        replace: 'calicoctl_download_url'
+   
+    - name: offline.yml helm_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# helm_download_url'
+        replace: 'helm_download_url'
+  
+    - name: offline.yml runc_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# runc_download_url'
+        replace: 'runc_download_url'
+
+    - name: offline.yml containerd_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# containerd_download_url'
+        replace: 'containerd_download_url'
+
+    - name: offline.yml nerdctl_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# nerdctl_download_url'
+        replace: 'nerdctl_download_url'
+    
+    - name: offline.yml krew_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# krew_download_url'
+        replace: 'krew_download_url'
+    
+    - name: containerd.yml 파일 수정
+      blockinfile:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/containerd.yml
+        block: |
+          containerd_registries_mirrors:
+            - prefix: "{{ lookup('env', 'IMAGE') }}"
+              mirrors:
+                - host: http://{{ lookup('env', 'IMAGE') }}
+                  capabilities: ["pull", "resolve"]
+                  skip_verify: true
+    
+    - name: hosts.toml.j2 파일 수정
+      replace:
+        path: /deploy/kubespray/roles/container-engine/containerd/templates/hosts.toml.j2
+        regexp: 'server = "{{ item.server | default("https://" + item.prefix) }}"'
+        replace: 'server = "{{ item.server | default("http://" + item.prefix) }}"'
