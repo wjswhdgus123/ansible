@@ -56,7 +56,7 @@
       replace:
         path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
         regexp: '^# crictl_download_url'
-        replace: 'crictl_download_urlurl'
+        replace: 'crictl_download_url'
    
     - name: offline.yml etcd_download_url
       replace:
@@ -69,6 +69,13 @@
         path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
         regexp: '^# calicoctl_download_url'
         replace: 'calicoctl_download_url'
+   
+    - name: offline.yml calicoctl_download_url
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/offline.yml
+        regexp: '^# calico_crds_download_url'
+        replace: 'calico_crds_download_url
+        '
    
     - name: offline.yml helm_download_url
       replace:
@@ -112,7 +119,7 @@
                   skip_verify: true
     
     - name: hosts.toml.j2 파일 수정
-      lineinfile:
+      replace:
         path: /deploy/kubespray/roles/container-engine/containerd/templates/hosts.toml.j2
-        regexp: 'https://'
-        line: 'http://'
+        regexp: 'https'
+        replace: 'http'
