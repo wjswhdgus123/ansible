@@ -5,7 +5,7 @@ cd /deploy/ansible
 git pull
 
 echo "envconvert"
-ansible-plabook /deploy/ansible/deploynode/envconvert.yaml
+ansible-playbook /deploy/ansible/deploynode/envconvert.yaml
 
 echo "k8s node setting"
 sshpass -p '@whdgus123!' ansible-playbook -i /deploy/kubespray/inventory/onepredict/inventory.ini -u ubuntu --ask-pass /deploy/ansible/setting/k8ssetting.yaml
