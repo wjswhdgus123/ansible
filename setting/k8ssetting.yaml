@@ -2,6 +2,27 @@
   become: true
   become_user: root
   tasks:
+    - name: 기존 sources.list 파일 백업
+      command: cp /etc/apt/sources.list /etc/apt/sources.list.bak
+
+    - name: 기존 APT 소스 제거
+      apt_repository:
+        state: absent
+        filename: '*'
+
+    - name: APT 저장소 추가
+      apt_repository:
+        repo: deb http://192.168.110.201:8081/repository/apt/ jammy main restricted universe multiverse
+        state: present
+
+    - name: APT 보안 저장소 추가
+      apt_repository:
+        repo: deb http://192.168.110.201:8081/repository/apt_security/ jammy-security main restricted universe multiverse
+        state: present
+
+    - name: APT 캐시 업데이트
+      apt:
+        update_cache: yes
     - name: /var/lib/apt/lists/* 파일 삭제
       file:
         path: /var/lib/apt/lists/*
@@ -21,20 +42,8 @@
         state: present
         line: '%sudo   ALL=(ALL:ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
-    - name: sshd_config 파일 수정
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^#?PermitRootLogin'
-        line: 'PermitRootLogin yes'
-    - name: sshd_config 파일 수정
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^#?PasswordAuthentication'
-        line: 'PasswordAuthentication yes'
-    - name: SSH 서비스 재시작
-      service:
-        name: ssh
-        state: restarted
+
+    
     - name: chrony 패키지 설치
       apt:
         name: chrony
