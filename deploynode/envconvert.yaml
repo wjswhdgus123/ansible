@@ -112,7 +112,7 @@
                   skip_verify: true
     
     - name: hosts.toml.j2 파일 수정
-      replace:
+      lineinfile:
         path: /deploy/kubespray/roles/container-engine/containerd/templates/hosts.toml.j2
-        regexp: 'server = "{{ item.server | default("https://" + item.prefix) }}"'
-        replace: 'server = "{{ item.server | default("http://" + item.prefix) }}"'
+        regexp: '^server = "{{ item.server | default("https://" + item.prefix) }}"$'
+        line: 'server = "{{ item.server | default("http://" + item.prefix) }}"'
