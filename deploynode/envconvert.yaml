@@ -146,7 +146,7 @@
       replace:
         path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
         regexp: '#   address: 1.2.3.4'
-        replace: '  address: "{{ lookup(\'env\', \'VIP\') }}"'
+        replace: "  address: \"{{ lookup('env', 'VIP') }}\""
     - name: 포트 설정 변경
       replace:
         path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
