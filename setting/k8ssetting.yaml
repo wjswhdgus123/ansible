@@ -7,6 +7,9 @@
 
     - name: 기존 APT 소스 제거
       command: rm -fr /etc/apt/sources.list 
+    
+    - name: 기존 APT 소스 제거
+      command: touch /etc/apt/sources.list 
 
     - name: APT 저장소 추가
       apt_repository:
