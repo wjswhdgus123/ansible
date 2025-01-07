@@ -1,0 +1,47 @@
+- hosts: controller01
+  become: yes
+  vars:
+    controller01: "192.168.100.100"
+    controller02: "192.168.100.101"
+    controller03: "192.168.100.102"
+    worknode01: "192.168.100.80"
+    worknode02: "192.168.100.81"
+    worknode03: "192.168.100.82"
+    vipaddr: "192.168.100.104"
+    interfacename: "192.168.100"
+    firstip: "192.168.100.83"
+    endip: "192.168.100.85"
+  tasks:
+    - name: haproxy.yaml ip setup
+      shell: "{{ item }}"
+      with_items:
+        - "sed -i s/controller_01/{{ controller01 }}/g /tmp/ansible/startk8s/haproxy.yaml"
+        - "sed -i s/controller_02/{{ controller02 }}/g /tmp/ansible/startk8s/haproxy.yaml"
+        - "sed -i s/controller_03/{{ controller03 }}/g /tmp/ansible/startk8s/haproxy.yaml"
+        - "sed -i 's/vipaddr/{{ vipaddr }}/g' /tmp/ansible/startk8s/haproxy.yaml"
+        - "sed -i 's/INTERFACENAME/{{ interfacename }}/g' /tmp/ansible/startk8s/haproxy.yaml"
+    - name: k8s.yaml ip setup
+      shell: "{{ item }}"
+      with_items:
+        - "sed -i s/controller_01/{{ controller01 }}/g /tmp/ansible/startk8s/k8s.yaml"
+        - "sed -i s/controller_02/{{ controller02 }}/g /tmp/ansible/startk8s/k8s.yaml"
+        - "sed -i s/controller_03/{{ controller03 }}/g /tmp/ansible/startk8s/k8s.yaml"
+        - "sed -i 's/vipaddr/{{ vipaddr }}/g' /tmp/ansible/startk8s/k8s.yaml"
+        - "sed -i 's/INTERFACENAME/{{ interfacename }}/g' /tmp/ansible/startk8s/k8s.yaml"
+    - name: timezone.yaml ip setup
+      shell: "{{ item }}"
+      with_items:
+        - "sed -i s/controller_01/{{ controller01 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/controller_02/{{ controller02 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/controller_03/{{ controller03 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/worknode_01/{{ worknode01 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/worknode_02/{{ worknode02 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i s/worknode_03/{{ worknode03 }}/g /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i 's/vipaddr/{{ vipaddr }}/g' /tmp/ansible/startk8s/timezone.yaml"
+        - "sed -i 's/INTERFACENAME/{{ interfacename }}/g' /tmp/ansible/startk8s/timezone.yaml"
+    - name: metallb.yaml ip setup
+      shell: "{{ item }}"
+      with_items:
+        - "sed -i s/firstIP/{{ firstip }}/g /tmp/ansible/startk8s/metallb.yaml"
+        - "sed -i s/endIP/{{ endip }}/g /tmp/ansible/startk8s/metallb.yaml"
+       

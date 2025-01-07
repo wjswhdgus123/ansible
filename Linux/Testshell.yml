@@ -1,0 +1,15 @@
+- hosts: all
+  gather_facts: no
+
+  tasks :
+    - name: cmd shell
+      shell: "grep -vxFf <(cut -d: -f1 /etc/group) <(cut -d: -f1 /etc/passwd) | xargs -I {} sh -c 'echo -en "["'$(date +%Y%m%d%H%M%S)'"] WARNING: The account ["{}"] does not exist in /etc/group. "; grep "{}" /etc/passwd' | grep -Eiv 'zabbix|ansible' "
+      register: CMD
+      ignore_errors: True
+
+    - name: result gogosing
+      debug: var=CMD.stdout_lines
+      when: CMD.rc == 0
+
+      
+

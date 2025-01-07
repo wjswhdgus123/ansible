@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: no
+
+
+  tasks:
+    - name: Delete Logs
+      command: "find /var/log/httpd -mtime +13 -delete"

@@ -1,0 +1,6 @@
+- hosts: all
+
+  tasks:
+    - name: chage min day (1)
+      shell: chage -m 1 {{ item }}
+      with_items: "{{ user_list }}"

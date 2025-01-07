@@ -1,0 +1,32 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Install Cockpit KVM plugin
+      apt:
+        name: cockpit-machines
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Install Cockpit KVM plugin
+      yum:
+        name: cockpit-machines
+        state: present
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+    - name: Install KVM packages
+      apt:
+        name: ['qemu-kvm', 'libvirt-daemon-system', 'bridge-utils', 'virt-manager'] # bridge-utils 중복 제거
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Install KVM packages
+      yum:
+        name: ['qemu-kvm', 'libvirt', 'virt-install', 'bridge-utils', 'virt-manager']
+        state: present
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+    - name: Start and enable libvirtd service
+      service:
+        name: libvirtd
+        state: started
+        enabled: yes

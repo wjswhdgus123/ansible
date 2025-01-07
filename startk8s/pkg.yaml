@@ -1,0 +1,104 @@
+- hosts: all
+  become: yes
+  tasks:
+   - name: Update and upgrade apt packages
+     apt:
+       upgrade: yes
+       update_cache: yes
+       cache_valid_time: 86400 #One day
+
+   - name: install curl 
+     apt:
+       name: curl
+       state: present
+       update_cache: true
+  
+   - name: install iftop
+     apt:
+       name: iftop
+       state: present
+       update_cache: true
+   
+   - name: install ntp 
+     apt:
+       name: chrony
+       state: present
+       update_cache: true
+     
+   - name: install ca-certificates
+     apt:
+       name: ca-certificates
+       state: present
+       update_cache: true
+    
+   - name: install gnupg 
+     apt:
+       name: gnupg
+       state: present
+       update_cache: true
+    
+   - name: install lsb
+     apt:
+       name: lsb-release
+       state: present
+       update_cache: true
+
+   - name: install nfs-common
+     apt:
+       name: nfs-common
+       state: present
+       update_cache: true
+   
+   - name: install gpg
+     apt:
+       name: gpg
+       state: present
+       update_cache: true
+
+   - name: add Docker apt-key
+     apt_key:
+       url: https://download.docker.com/linux/ubuntu/gpg
+       state: present
+
+   - name: Add Docker Repository
+     apt_repository:
+       repo: deb https://download.docker.com/linux/ubuntu focal stable
+       state: present
+
+   - name: Update apt and install Containerd
+     apt:
+       name: containerd.io
+       state: latest
+       update_cache: true
+
+    - name: Add Kubernetes repository key
+      shell: |
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        executable: /bin/bash
+
+    - name: Add Kubernetes repository to /etc/apt/sources.list.d/kubernetes.list
+      lineinfile:
+        path: /etc/apt/sources.list.d/kubernetes.list
+        line: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /'
+        create: yes
+        owner: root
+        group: root
+        mode: '0644'
+   - name: Update apt and install kubelet
+     apt:
+       name: kubelet
+       state: latest
+       update_cache: true
+
+   - name: Update apt and install kubelet
+     apt:
+       name: kubeadm
+       state: latest
+       update_cache: true
+
+   - name: Update apt and install kubelet
+     apt:
+       name: kubectl
+       state: latest
+       update_cache: true

@@ -1,0 +1,22 @@
+[k8s]
+192.168.100.100 ansible_ssh_user=k8s
+192.168.100.101 ansible_ssh_user=k8s
+192.168.100.102 ansible_ssh_user=k8s
+192.168.100.80 ansible_ssh_user=k8s
+192.168.100.81 ansible_ssh_user=k8s
+192.168.100.82 ansible_ssh_user=k8s
+[controller_salve]
+192.168.100.101 ansible_ssh_user=k8s
+192.168.100.102 ansible_ssh_user=k8s
+
+[controller01]
+192.168.100.100 ansible_ssh_user=k8s
+[controller]
+192.168.100.100 ansible_ssh_user=k8s
+192.168.100.101 ansible_ssh_user=k8s
+192.168.100.102 ansible_ssh_user=k8s
+
+[worknode]
+192.168.100.80 ansible_ssh_user=k8s
+192.168.100.81 ansible_ssh_user=k8s
+192.168.100.82 ansible_ssh_user=k8s

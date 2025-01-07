@@ -1,0 +1,8 @@
+- hosts: all
+  remote_user: ansible
+  tasks:
+    - name: "fetch files" # fetch 모듈 사용.
+      fetch:
+        src: /home/ansible/{{ ansible_hostname }}-linux-result.log
+        dest: /isms/
+        flat: yes

@@ -1,0 +1,41 @@
+- name: Configure Chrony and Set NTP Servers
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Update Chrony configuration
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      loop:
+        - { regexp: '^pool ntp.ubuntu.com.*', line: '# pool ntp.ubuntu.com iburst maxsources 4' }
+        - { regexp: '^pool 0.ubuntu.pool.ntp.org.*', line: '# pool 0.ubuntu.pool.ntp.org iburst maxsources 1' }
+        - { regexp: '^pool 1.ubuntu.pool.ntp.org.*', line: '# pool 1.ubuntu.pool.ntp.org iburst maxsources 1' }
+        - { regexp: '^pool 2.ubuntu.pool.ntp.org.*', line: '# pool 2.ubuntu.pool.ntp.org iburst maxsources 2' }
+        - { regexp: '^#?server time.bora.net.*', line: 'server time.bora.net iburst' }
+        - { regexp: '^#?server send.mx.cdnetworks.com.*', line: 'server send.mx.cdnetworks.com iburst' }
+
+    - name: Restart Chrony service
+      service:
+        name: chrony
+        state: restarted
+    
+    - name: Set timezone to Seoul
+      timezone:
+        name: Asia/Seoul
+        
+    - name: Add entries to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item }}"
+        insertafter: EOF
+      loop:
+        - "controller_01 controller01"
+        - "controller_02 controller02"
+        - "controller_03 controller03"
+        - "worknode_01 worknode01"
+        - "worknode_02 worknode02"
+        - "worknode_03 worknode03"
+        - "vipaddr vip"
+     

@@ -1,0 +1,15 @@
+---
+- hosts: all
+
+  tasks :    
+    - name         : Get User List
+      shell        : "cat /etc/passwd|grep bash |grep [1-9][0-9][0-9][0-9]|grep -v ansible |grep -v jhjeon2 |grep -v dwlee |grep -v mwlee |grep -v zabbix |awk -F ':' '{print $1} '"
+      changed_when : False
+      register     : user_list
+
+    - name  : debug user_list
+      debug : var=user_list.stdout_lines
+
+      
+   
+

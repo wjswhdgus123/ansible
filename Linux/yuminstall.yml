@@ -1,0 +1,10 @@
+- name: Test Pkg install
+  hosts: all
+  tasks:
+    - name: Install a list of packages with a list variable
+      action: "{{ ansible_pkg_mgr }} name={{ pkg }} state=present"
+      when: ansible_distribution == 'CentOS'
+
+    - name: Install a list of packages with a list variable
+      action: "{{ ansible_pkg_mgr }} name={{ pkg }} state=present"
+      when: ansible_distribution == 'Ubuntu'  

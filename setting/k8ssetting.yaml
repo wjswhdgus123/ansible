@@ -1,0 +1,207 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: /var/lib/apt/lists/* 파일 삭제
+      file:
+        path: /var/lib/apt/lists/*
+        state: absent
+    - name: apt update 및 upgrade 실행
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: hostname 변경
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: sudoers 파일 수정
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        line: '%sudo   ALL=(ALL:ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+    - name: sshd_config 파일 수정
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin yes'
+    - name: sshd_config 파일 수정
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication yes'
+    - name: SSH 서비스 재시작
+      service:
+        name: ssh
+        state: restarted
+    - name: chrony 패키지 설치
+      apt:
+        name: chrony
+        state: present
+        update_cache: yes
+
+    - name: chrony 설정 파일 수정 (controllplan01)
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        line: "allow {{ ansible_default_ipv4.address }}"
+        state: present
+      when: inventory_hostname == 'controllplan01'
+
+    - name: chrony 설정 파일 수정 (other nodes)
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        line: "server controllplan01 iburst"
+        state: present
+      when: inventory_hostname != 'controllplan01'
+
+    - name: chrony 서비스 재시작
+      service:
+        name: chrony
+        state: restarted
+    - name: 디스크 속도 측정 도구 설치
+      apt:
+        name: fio
+        state: present
+        update_cache: yes
+
+
+   
+
+    - name: telnet 설치
+      apt:
+        name: telnet
+        state: present
+
+    - name: tcpflow 설치
+      apt:
+        name: tcpflow
+        state: present
+    - name: 타임존을 Asia/Seoul로 설정
+      timezone:
+        name: Asia/Seoul
+
+- hosts: HA
+  become: true
+  vars:
+    VIP: 192.168.110.250
+
+  tasks:
+    - name: keepalived 및 HAProxy 패키지 설치
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - keepalived
+        - haproxy
+    
+
+    - name: controllplan01 priority 및 state 값 설정
+      set_fact:
+        priority: 100
+        state: "MASTER"
+      when: inventory_hostname == "controllplan01"
+
+    - name: controllplan02 priority 및 state 값 설정
+      set_fact:
+        priority: 99
+        state: "BACKUP"
+      when: inventory_hostname == "controllplan02"
+
+    - name: controllplan03 priority 및 state 값 설정
+      set_fact:
+        priority: 98
+        state: "BACKUP"
+      when: inventory_hostname == "controllplan03"
+
+    - name: keepalived 설정 파일 생성
+      blockinfile:
+        path: /etc/keepalived/keepalived.conf
+        create: yes
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        block: |
+          global_defs {
+            notification_email {
+            }
+            router_id LVS_NODE_1
+            vrrp_skip_check_adv_addr
+            vrrp_garp_interval 0
+            vrrp_gna_interval 0
+          }
+
+          vrrp_script chk_haproxy {
+            script "killall -0 haproxy"
+            interval 2
+            weight 2
+          }
+
+          vrrp_instance haproxy-vip {
+            state {{ hostvars[inventory_hostname].state }} 
+            priority {{ hostvars[inventory_hostname].priority }}
+            interface enp129s0f0
+            virtual_router_id 60
+            advert_int 1
+            nopreempt
+            authentication {
+              auth_type PASS
+              auth_pass 1111
+            }
+
+            virtual_ipaddress {
+              {{ VIP }}/24
+            }
+
+            track_script {
+              chk_haproxy
+            }
+          }
+
+
+    - name: 인터페이스 정보 수집
+      set_fact:
+        interface_name: "{{ ansible_default_ipv4.interface }}"
+      when: interface_name is not defined
+
+    - name: keepalived 설정 파일 수정 (인터페이스 변경)
+      replace:
+        path: /etc/keepalived/keepalived.conf
+        regexp: 'interface enp129s0f0'
+        replace: 'interface {{ interface_name }}'
+
+    - name: HAProxy 설정 파일 생성
+      blockinfile:
+        path: /etc/haproxy/haproxy.cfg
+        create: yes
+        block: |
+        
+
+          listen kubernetes-apiserver-https
+            bind {{ VIP }}:16443  # VIP 변수 사용
+            mode tcp
+            option log-health-checks
+            timeout client 3h
+            timeout server 3h
+            server controllplan01 {{ hostvars['controllplan01'].ansible_host }}:6443 check check-ssl verify none inter 10000
+            server controllplan02 {{ hostvars['controllplan02'].ansible_host }}:6443 check check-ssl verify none inter 10000
+            server controllplan03 {{ hostvars['controllplan03'].ansible_host }}:6443 check check-ssl verify none inter 10000
+            balance roundrobin
+
+          listen stats
+            bind *:8080
+            mode http
+            maxconn 10
+            stats enable
+            stats hide-version
+            stats realm Haproxy\ Statistics
+            stats uri /
+            stats auth admin:onepredict99!@
+     
+    - name: keepalived 서비스 재시작
+      service:
+        name: keepalived
+        state: started
+    - name: haproxy 서비스 재시작
+      service:
+        name: haproxy
+        state: started

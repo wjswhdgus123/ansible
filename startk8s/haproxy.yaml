@@ -1,0 +1,130 @@
+- hosts: controller
+  become: yes
+  tasks:
+   - name: Clone a repo with separate git directory
+     ansible.builtin.git:
+       repo: https://github.com/wjswhdgus123/ansible.git
+       dest: /tmp/ansible
+
+   - name: Update and upgrade apt packages
+     apt:
+       upgrade: yes
+       update_cache: yes
+       cache_valid_time: 86400 #One day
+
+   - name: install haproxy
+     apt:
+       name: haproxy
+       state: present
+       update_cache: true
+
+   - name: install keepalived
+     apt:
+       name: keepalived
+       state: present
+       update_cache: true
+   - name: Copy keepalived.conf file
+     copy:
+       src: /tmp/ansible/startk8s/keepalived.conf
+       dest: /etc/keepalived/keepalived.conf
+       owner: root
+       group: root
+       mode: '0644'
+       backup: yes
+   - name: Copy keepalived.conf file
+     copy:
+       src: /tmp/ansible/startk8s/haproxy.conf
+       dest: /etc/haproxy/haproxy.cfg
+       owner: root
+       group: root
+       mode: '0644'
+       backup: yes
+
+   - name: Check IP address and modify keepalived.conf
+     ansible.builtin.replace:
+       path: /etc/keepalived/keepalived.conf
+       regexp: 'MASTER'
+       replace: 'BACKUP'
+     when: ansible_default_ipv4.address != 'controller_01'
+
+   - name: Check IP address check priority
+     ansible.builtin.replace:
+       path: /etc/keepalived/keepalived.conf
+       regexp: 'priority 101'
+       replace: 'priority 100'
+     when: ansible_default_ipv4.address == 'controller_02'
+
+   - name: Check priority
+     ansible.builtin.replace:
+       path: /etc/keepalived/keepalived.conf
+       regexp: 'priority 101'
+       replace: 'priority 99'
+     when: ansible_default_ipv4.address == 'controller_03'
+
+
+   - name: Change IP address in keepalived.conf
+     ansible.builtin.replace:
+       path: /etc/keepalived/keepalived.conf
+       regexp: '172\.16\.30\.206\/24'
+       replace: 'vipaddr/24'
+
+   - name: Get interface with IP Interface Name
+     ansible.builtin.shell: ip addr show | grep 'INTERFACENAME' | awk '{print $NF}'
+     register: interface_name
+     changed_when: False
+
+   - name: Update keepalived.conf with new interface
+     ansible.builtin.replace:
+       path: /etc/keepalived/keepalived.conf
+       regexp: 'ens160'
+       replace: "{{ interface_name.stdout }}"
+
+   - name: Update vip.ex.com:16443 to vip:16443
+     ansible.builtin.replace:
+       path: /etc/haproxy/haproxy.cfg
+       regexp: 'vip\.ex\.com:16443'  # 변경할 패턴 정규식
+       replace: '0.0.0.0:16443'  # 새로운 문자열
+
+   - name: Update worknode:6443
+     ansible.builtin.replace:
+       path: /etc/haproxy/haproxy.cfg
+       regexp: 'server kube-control-200 172\.16\.xx\.xx\:6443 check'  # 변경할 패턴 정규식
+       replace: 'server controller01 controller_01:6443 check'  # 새로운 문자열
+
+   - name: Update worknode:6443
+     ansible.builtin.replace:
+       path: /etc/haproxy/haproxy.cfg
+       regexp: 'server kube-control-201 172\.16\.xx\.xx\:6443 check'  # 변경할 패턴 정규식
+       replace: 'server controller02 controller_02:6443 check'  # 새로운 문자열
+
+   - name: Update worknode:6443
+     ansible.builtin.replace:
+       path: /etc/haproxy/haproxy.cfg
+       regexp: 'server kube-control-202 172\.16\.xx\.xx\:6443 check3'  # 변경할 패턴 정규식
+       replace: 'server controller03 controller_03:6443 check'  # 새로운 문자열
+
+   - name: Add net.ipv4.ip_nonlocal_bind to sysctl.conf
+     ansible.builtin.lineinfile:
+       path: /etc/sysctl.conf
+       line: 'net.ipv4.ip_nonlocal_bind = 1'
+       insertafter: EOF
+       state: present
+
+   - name: Add net.ipv4.ip_forward to sysctl.conf
+     ansible.builtin.lineinfile:
+       path: /etc/sysctl.conf
+       line: 'net.ipv4.ip_forward = 1'
+       insertafter: EOF
+       state: present
+
+   - name: Enable HAProxy service
+     systemd:
+        name: keepalived
+        enabled: yes
+        state: started
+
+   - name: Enable HAProxy service
+     systemd:
+        name: haproxy
+        enabled: yes
+        state: started

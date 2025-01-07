@@ -1,0 +1,75 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: python3-venv 설치
+      apt:
+        name: python3-venv
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: /tmp/에 쿠버스프레이 2.26.0 clone
+      git:
+        repo: https://github.com/kubernetes-sigs/kubespray.git
+        dest: /tmp/kubespray
+        version: v2.26.0
+
+    - name: 시스템 패키지 업데이트
+      apt:
+        update_cache: yes
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: 필요한 패키지 설치
+      apt:
+        name: 
+          - apt-transport-https 
+          - ca-certificates 
+          - curl 
+          - gnupg-agent 
+          - software-properties-common
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Docker의 공식 GPG 키 추가
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Docker의 apt 저장소 추가
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable"  # jammy로 변경
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: 시스템 패키지 업데이트
+      apt:
+        update_cache: yes
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Docker 설치
+      apt:
+        name: 
+          - docker-ce 
+          - docker-ce-cli 
+          - containerd.io
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: docker 로그인
+      docker_login:
+        registry: harbor.onepredict.net
+        username: guardione
+        password: Onepredict1!
+
+    - name: harbor.onepredict.net/offline/nexus:deploy 이미지 pull
+      docker_image:
+        name: harbor.onepredict.net/offline/nexus:deploy
+        source: pull
+        
+    - name: harbor.onepredict.net/offline/nexus 이미지를 사용하여 Docker 컨테이너 실행
+      docker_container:
+        name: nexus
+        image: harbor.onepredict.net/offline/nexus
+        ports:
+          - "8081:8081"
+        state: started

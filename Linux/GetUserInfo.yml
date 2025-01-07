@@ -1,0 +1,13 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks :
+    - name: Print user info
+      shell: "cat /etc/passwd | grep {{ user }};chage -l {{ user }}|grep 'Password expires';cat /etc/sudoers|grep ^{{ user }}"
+      register: user_info
+      ignore_errors: True
+
+    - name: result gogosing
+      debug: var=user_info.stdout_lines
+      when: user_info.rc == 0
