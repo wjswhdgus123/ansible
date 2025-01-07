@@ -1,0 +1,15 @@
+services:
+  deploynode:
+    image: deploynode:v1
+    ports:
+      - "2222:22"
+    env_file:
+      - .env
+    extra_hosts:
+      - "controllplan01:192.168.110.50"
+      - "controllplan02:192.168.110.51"
+      - "controllplan03:192.168.110.52"
+      - "worker01:192.168.110.60"
+      - "worker02:192.168.110.61"
+      - "worker03:192.168.110.62"
+    restart: always

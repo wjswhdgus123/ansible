@@ -91,7 +91,7 @@
       timezone:
         name: Asia/Seoul
 
-- hosts: HA
+- hosts: kube_control_plane
   become: true
   vars:
     VIP: 192.168.110.250

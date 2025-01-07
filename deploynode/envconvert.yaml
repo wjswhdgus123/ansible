@@ -123,3 +123,32 @@
         path: /deploy/kubespray/roles/container-engine/containerd/templates/hosts.toml.j2
         regexp: 'https'
         replace: 'http'
+   
+    - name: helm enable
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/k8s_cluster/addons.yml
+        regexp: 'helm_enabled: false'
+        replace: 'helm_enabled: true'
+    
+    - name: krew enable
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/k8s_cluster/addons.yml
+        regexp: 'krew_enabled: false'
+        replace: 'krew_enabled: true'
+
+    - name: Loadbalancer_apiserver enable
+      replace:
+        path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
+        regexp: '# loadbalancer_apiserver:'
+        replace: 'loadbalancer_apiserver:'
+    
+    - name: Loadbalancer_apiserver enable
+      replace:
+        path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
+        regexp: '#   address: 1.2.3.4'
+        replace: '  address: "{{ lookup(\'env\', \'VIP\') }}"'
+    - name: 포트 설정 변경
+      replace:
+        path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
+        regexp: '#   port: 1234'
+        replace: '  port: "{{ lookup(\'env\', \'PORT\') }}"'
