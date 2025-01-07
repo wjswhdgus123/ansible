@@ -144,11 +144,11 @@
     
     - name: Loadbalancer_apiserver enable
       replace:
-        path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/all.yml
         regexp: '#   address: 1.2.3.4'
         replace: "  address: \"{{ lookup('env', 'VIP') }}\""
     - name: 포트 설정 변경
       replace:
-        path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/all.yml
         regexp: '#   port: 1234'
         replace: "  port: \"{{ lookup('env', 'PORT') }}\""  # 큰따옴표로 묶음
