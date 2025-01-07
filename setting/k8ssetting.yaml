@@ -1,6 +1,8 @@
 - hosts: all
   become: true
   become_user: root
+  vars:
+    ansible_become_pass: "@whdgus123!"
   tasks:
     - name: 기존 sources.list 파일 백업
       command: cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -93,7 +95,9 @@
 
 - hosts: kube_control_plane
   become: true
+  become_user: root
   vars:
+    ansible_become_pass: "@whdgus123!"
     VIP: 192.168.110.250
 
   tasks:
@@ -215,3 +219,7 @@
       service:
         name: haproxy
         state: started
+    - name: haproxy 서비스 재시작
+      service:
+        name: haproxy
+        state: restarted
