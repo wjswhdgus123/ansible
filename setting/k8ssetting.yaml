@@ -6,12 +6,15 @@
   tasks:
     - name: 기존 sources.list 파일 백업
       command: cp /etc/apt/sources.list /etc/apt/sources.list.bak
+      ignore_errors: yes
+
+   
+   
+    - name: 기존 APT 소스 제거
+      command: rm -fr /etc/apt/sources.list
 
     - name: 기존 APT 소스 제거
-      command: rm -fr /etc/apt/sources.list 
-    
-    - name: 기존 APT 소스 제거
-      command: touch /etc/apt/sources.list 
+      command: touch /etc/apt/sources.list  
 
     - name: APT 저장소 추가
       apt_repository:
