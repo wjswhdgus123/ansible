@@ -194,7 +194,7 @@
         
 
           listen kubernetes-apiserver-https
-            bind {{ VIP }}:16443  # VIP 변수 사용
+            bind *:16443  # VIP 변수 사용
             mode tcp
             option log-health-checks
             timeout client 3h
