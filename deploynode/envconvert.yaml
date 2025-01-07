@@ -138,7 +138,7 @@
 
     - name: Loadbalancer_apiserver enable
       replace:
-        path: /root/test/kubespray/inventory/sample/group_vars/all/all.yml
+        path: /deploy/kubespray/inventory/onepredict/group_vars/all/all.yml
         regexp: '# loadbalancer_apiserver:'
         replace: 'loadbalancer_apiserver:'
     
