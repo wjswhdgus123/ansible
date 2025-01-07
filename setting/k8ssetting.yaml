@@ -6,9 +6,7 @@
       command: cp /etc/apt/sources.list /etc/apt/sources.list.bak
 
     - name: 기존 APT 소스 제거
-      apt_repository:
-        state: absent
-        filename: '*'
+      command: rm -fr /etc/apt/sources.list 
 
     - name: APT 저장소 추가
       apt_repository:
