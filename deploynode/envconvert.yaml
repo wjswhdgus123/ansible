@@ -118,20 +118,7 @@
                 - host: http://{{ lookup('env', 'IMAGE') }}
                   capabilities: ["pull", "resolve"]
                   skip_verify: true
-          containerd_registries_mirrors:
-            - prefix: "{{ lookup('env', 'DOCKER') }}"
-              mirrors:
-                - host: http://{{ lookup('env', 'DOCKER') }}
-                  capabilities: ["pull", "resolve"]
-                  skip_verify: true
-          
-          containerd_registries_mirrors:
-            - prefix: "{{ lookup('env', 'HARBOR') }}"
-              mirrors:
-                - host: http://{{ lookup('env', 'HARBOR') }}
-                  capabilities: ["pull", "resolve"]
-                  skip_verify: true
-    
+     
     - name: hosts.toml.j2 파일 수정
       replace:
         path: /deploy/kubespray/roles/container-engine/containerd/templates/hosts.toml.j2
