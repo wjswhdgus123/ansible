@@ -107,6 +107,7 @@
         regexp: '^# krew_download_url'
         replace: 'krew_download_url'
     
+    
     - name: containerd.yml 파일 수정
       blockinfile:
         path: /deploy/kubespray/inventory/onepredict/group_vars/all/containerd.yml
@@ -117,20 +118,13 @@
                 - host: http://{{ lookup('env', 'IMAGE') }}
                   capabilities: ["pull", "resolve"]
                   skip_verify: true
-    - name: containerd.yml 파일 수정
-      blockinfile:
-        path: /deploy/kubespray/inventory/onepredict/group_vars/all/containerd.yml
-        block: |
           containerd_registries_mirrors:
             - prefix: "{{ lookup('env', 'DOCKER') }}"
               mirrors:
                 - host: http://{{ lookup('env', 'DOCKER') }}
                   capabilities: ["pull", "resolve"]
                   skip_verify: true
-    - name: containerd.yml 파일 수정
-      blockinfile:
-        path: /deploy/kubespray/inventory/onepredict/group_vars/all/containerd.yml
-        block: |
+          
           containerd_registries_mirrors:
             - prefix: "{{ lookup('env', 'HARBOR') }}"
               mirrors:
