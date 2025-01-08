@@ -81,8 +81,6 @@
         update_cache: yes
 
 
-   
-
     - name: telnet 설치
       apt:
         name: telnet
@@ -228,3 +226,8 @@
         name: haproxy
         state: restarted
       ignore_errors: yes
+    
+    - name: k9s 설치
+      apt:
+        url: http://192.168.110.201:8081/repository/filerepo/ubuntu/k9s_linux_amd64.deb
+        state: present
