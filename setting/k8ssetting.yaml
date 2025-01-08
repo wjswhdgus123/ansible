@@ -227,12 +227,4 @@
         state: restarted
       ignore_errors: yes
     
-    - name: k9s 다운로드
-      wget:
-        url: http://192.168.110.201:8081/repository/filerepo/ubuntu/k9s_linux_amd64.deb
-        dest: /tmp/k9s_linux_amd64.deb
-
-    - name: k9s 설치
-      become: true
-      apt:
-        deb: /tmp/k9s_linux_amd64.deb
+   
