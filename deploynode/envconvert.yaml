@@ -131,6 +131,12 @@
         regexp: 'helm_enabled: false'
         replace: 'helm_enabled: true'
     
+    - name: ingress_nginx_enabled
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/k8s_cluster/addons.yml
+        regexp: 'ingress_nginx_enabled: false'
+        replace: 'ingress_nginx_enabled: true'
+    
     - name: krew enable
       replace:
         path: /deploy/kubespray/inventory/onepredict/group_vars/k8s_cluster/addons.yml
