@@ -137,6 +137,48 @@
         regexp: 'ingress_nginx_enabled: false'
         replace: 'ingress_nginx_enabled: true'
     
+    - name: cert_manager_enabled
+      replace:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/k8s_cluster/addons.yml
+        regexp: 'cert_manager_enabled: false'
+        replace: 'cert_manager_enabled: true'
+    
+    - name: cert_manager 인증서 항목 추가
+      lineinfile:
+        path: /deploy/kubespray/inventory/onepredict/group_vars/k8s_cluster/addons.yml
+        insertafter: 'cert_manager_enabled: true'
+        line: |
+          truecert_manager_trusted_internal_ca: |
+            -----BEGIN CERTIFICATE-----
+            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
+            -----END CERTIFICATE-----
+
     - name: krew enable
       replace:
         path: /deploy/kubespray/inventory/onepredict/group_vars/k8s_cluster/addons.yml

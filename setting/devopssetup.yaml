@@ -7,52 +7,37 @@
         state: directory
         mode: 0755
 
-    - name: hosts.toml 파일 생성
-      blockinfile:
-        path: /etc/containerd/certs.d/{{ lookup('env', 'DOCKER') }}/hosts.toml
-        block: |
+    - name: hosts.toml 파일 생성 (DockerHub)
+      copy:
+        content: |
           server = "{{ lookup('env', 'DOCKER') }}"
 
           [host."http://{{ lookup('env', 'DOCKER') }}"]
           capabilities = ["pull", "resolve"]
           skip_verify = true
           override_path = false
-    
+        dest: /etc/containerd/certs.d/{{ lookup('env', 'DOCKER') }}/hosts.toml
+        mode: 0644
+
     - name: Add Repos onepredict Harbor
       file:
         path: /etc/containerd/certs.d/{{ lookup('env', 'HARBOR') }}
         state: directory
         mode: 0755
 
-    - name: hosts.toml 파일 생성
-      blockinfile:
-        path: /etc/containerd/certs.d/{{ lookup('env', 'HARBOR') }}/hosts.toml
-        block: |
+    - name: hosts.toml 파일 생성 (onepredict Harbor)
+      copy:
+        content: |
           server = "{{ lookup('env', 'HARBOR') }}"
 
           [host."http://{{ lookup('env', 'HARBOR') }}"]
           capabilities = ["pull", "resolve"]
           skip_verify = true
           override_path = false
-
-     - name: ingress-nginx Setup
-
-     - name: MetalLB setup
-
-     - name: cert-manager Setup
-
-     - name: Harbor Setup
-
-     - name: Rook-ceph Setup
-
-     - name: gitea Setup
-
-     - name: Argocd setup
-
-     - name: 옵저빌리티 Setup
-
-     
-
-
-
+        dest: /etc/containerd/certs.d/{{ lookup('env', 'HARBOR') }}/hosts.toml
+        mode: 0644
     
+    - name: containerd 재시작
+      service:
+        name: containerd
+        state: restarted

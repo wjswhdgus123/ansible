@@ -226,5 +226,4 @@
         name: haproxy
         state: restarted
       ignore_errors: yes
-    
-   
+  
