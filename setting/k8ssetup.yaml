@@ -18,7 +18,7 @@
       - "helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph -f iac-devops/cicd/apps-helm-chart/apps/rook-ceph-values.yaml"
       - "sleep 120"
       - "helm install --create-namespace --namespace rook-ceph rook-ceph-cluster rook-release/rook-ceph-cluster -f iac-devops/cicd/apps-helm-chart/apps/rook-ceph-cluster-values.yaml"
-      - "sleep 360"
+      - "sleep "200"
       - "helm repo add argo http://192.168.110.201:8081/repository/argocd "
       - "helm install --create-namespace --namespace argocd argocd argo/argo-cd  -f iac-devops/cicd/apps-helm-chart/apps/values-argocd.yaml -n argocd"
       - "helm repo add goharbor http://192.168.110.201:8081/repository/harbor-helm"
