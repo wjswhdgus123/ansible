@@ -1,4 +1,9 @@
 - hosts: controllplan01
+  become: true
+  become_user: root
+  vars:
+    ansible_become_pass: "@whdgus123!"
+- hosts: controllplan01
   tasks:
     - name: kube-proxy configmap 수정 및 적용
       shell: |
