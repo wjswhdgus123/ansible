@@ -111,6 +111,14 @@
         - keepalived
         - haproxy
     
+    - name: k9s 다운로드 및 설치
+      shell: |
+        wget http://192.168.110.201:8081/repository/filerepo/k9s/k9s_linux_amd64.deb
+        dpkg -i k9s_linux_amd64.deb
+      register: result
+
+    - debug:
+        var: result
 
     - name: controllplan01 priority 및 state 값 설정
       set_fact:

@@ -1,0 +1,29 @@
+- hosts: controllplan01
+  tasks:
+    - name: kube-proxy configmap 수정 및 적용
+      shell: |
+        kubectl get configmap kube-proxy -n kube-system -o yaml | \
+        sed -e "s/strictARP: false/strictARP: true/" | \
+        tee /tmp/kube-proxy-configmap.yaml | \
+        kubectl diff -f - -n kube-system
+
+        kubectl get configmap kube-proxy -n kube-system -o yaml | \
+        sed -e "s/strictARP: false/strictARP: true/" | \
+        kubectl apply -f - -n kube-system
+
+        wget http://192.168.110.201:8081/repository/filerepo/deployfile/iac.tar.gz
+        tar xvzf iac.tar.gz
+
+        kubectl apply -f iac-devops/cicd/apps-helm-chart/apps/metallb-native.yaml
+
+        helm repo add rook-release http://192.168.110.201:8081/repository/rook-ceph/
+
+        helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph -f iac-devops/cicd/apps-helm-chart/apps/rook-ceph-values.yaml
+
+        helm install --create-namespace --namespace rook-ceph rook-ceph-cluster \
+        --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster -f iac-devops/cicd/apps-helm-chart/apps/rook-ceph-cluster-values.yaml
+      register: result
+
+    - name: 결과 출력
+      debug:
+        var: result
