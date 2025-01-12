@@ -18,8 +18,6 @@
       - "kubectl get configmap kube-proxy -n kube-system -o yaml  |sed -e 's/mode: \"\"/mode: \"ipvs\"/'|kubectl apply -f - -n kube-system"
       - "kubectl get configmap kube-proxy -n kube-system -o yaml |sed -e 's/strictARP: false/strictARP: true/' |kubectl apply -f - -n kube-system"
       - "kubectl apply -f iac-devops/cicd/apps-helm-chart/apps/metallb-native.yaml"
-      - "kubectl apply -f iac-devops/cicd/apps-helm-chart/apps/ip.yaml "
-      - "kubectl apply -f iac-devops/cicd/apps-helm-chart/apps/pool.yaml"
       - "helm repo add rook-release http://192.168.110.201:8081/repository/rook-ceph"
       - "helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph -f iac-devops/cicd/apps-helm-chart/apps/rook-ceph-values.yaml"
       - "sleep 120"
@@ -30,9 +28,8 @@
       - "helm repo add goharbor http://192.168.110.201:8081/repository/harbor-helm"
       - "helm install --create-namespace --namespace harbor harbor goharbor/harbor -f iac-devops/cicd/apps-helm-chart/apps/harbor_values.yaml -n harbor"
       - "helm repo add gitea-charts http://192.168.110.201:8081/repository/gitea-helm/"
-      - "helm install --create-namespace --namespace gitea gitea  gitea-charts/gitea -f iac-devops/cicd/apps-helm-chart/apps/gitea-valuse.yaml"
-      #- "helm repo add prometheus-community http://192.168.110.201:8081/repository/grfana-helm/"
-      #- "helm install --create-namespace --namespace monitor prometheus prometheus-community/kube-prometheus-stack -f kube-prometheus-stack-values.yaml -n monitor"
+      - "helm install --create-namespace --namespace gitea gitea  gitea-charts/gitea -f iac-devops/cicd/apps-helm-chart/apps/gitea-values.yaml"
+     
       register: result
 
     - name: 결과 출력
