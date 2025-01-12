@@ -7,12 +7,12 @@
     - name: haproxy.yaml ip setup
       shell: "{{ item }}"
       with_items:
-      - "kubectl label node worker001 node-role=worker"
-      - "kubectl label node worker001 node-role.kubernetes.io/worker="
-      - "kubectl label node worker002 node-role=worker"
-      - "kubectl label node worker002 node-role.kubernetes.io/worker="
-      - "kubectl label node worker003 node-role=worker"
-      - "kubectl label node worker003 node-role.kubernetes.io/worker="
+      - "kubectl label node worker01 node-role=worker"
+      - "kubectl label node worker01 node-role.kubernetes.io/worker="
+      - "kubectl label node worker02 node-role=worker"
+      - "kubectl label node worker02 node-role.kubernetes.io/worker="
+      - "kubectl label node worker03 node-role=worker"
+      - "kubectl label node worker03 node-role.kubernetes.io/worker="
       - "wget http://192.168.110.201:8081/repository/filerepo/deployfile/iac.tar.gz"
       - "tar xvzf iac.tar.gz"
       - "kubectl get configmap kube-proxy -n kube-system -o yaml  |sed -e 's/mode: \"\"/mode: \"ipvs\"/'|kubectl apply -f - -n kube-system"
