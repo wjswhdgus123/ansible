@@ -7,6 +7,8 @@
     - name: k8s setting
       shell: "{{ item }}"
       with_items:
+      - "echo 'fs.file-max = 65536' >> /etc/sysctl.conf "
+      - "sysctl -p"
       - "kubectl label node worker01 node-role=worker"
       - "kubectl label node worker01 node-role.kubernetes.io/worker="
       - "kubectl label node worker02 node-role=worker"
@@ -29,10 +31,10 @@
       - "helm install --create-namespace --namespace harbor harbor goharbor/harbor -f iac-devops/cicd/apps-helm-chart/apps/harbor_values.yaml -n harbor"
       - "helm repo add gitea-charts http://192.168.110.201:8081/repository/gitea-helm/"
       - "helm install --create-namespace --namespace gitea gitea  gitea-charts/gitea -f iac-devops/cicd/apps-helm-chart/apps/gitea-values.yaml"
-      - "curl -u oneuser:onepredict99\!\@ -X POST -H "Content-Type: application/json" -d '{"name": "iac-devops", "private": false}' http://gitea-http.gitea:3000/api/v1/user/repos"
-      - "git clone http://gitea-http.gitea:3000/oneuser/iac-devpos.git"
-      - "cd ~/iac-devops && kubectl apply -f ip.yaml"
-      - "cd ~/iac-devops && kubectl apply -f pool.yaml"
+      - "sleep 200"  
+      - "curl -u oneuser:onepredict99\\!@ -X POST -H \"Content-Type: application/json\" -d '{\"name\": \"iac-devops\", \"private\": false}' http://gitea-http.gitea:3000/api/v1/user/repos"
+      - "cd /home/ubuntu/iac-devops/cicd/apps-helm-chart/apps && kubectl apply -f ip.yaml"
+      - "cd /home/ubuntu/iac-devops/cicd/apps-helm-chart/apps && kubectl apply -f pool.yaml"
      
       register: result
 
