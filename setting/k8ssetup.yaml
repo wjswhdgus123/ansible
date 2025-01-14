@@ -1,3 +1,41 @@
+- hosts: all
+  become: true
+  become_user: root
+  vars:
+    ansible_become_pass: "@whdgus123!"
+  tasks:
+    - name: 90-installer-network.cfg 파일 수정
+      lineinfile:
+        path: /etc/cloud/cloud.cfg.d/90-installer-network.cfg
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^[ ]{8}- 8.8.8.8', line: '        - 10.233.0.3' }
+        - { regexp: '^[ ]{8}- bestpath.co.kr', line: '        - cluster.local' }
+
+    - name: 90-installer-network.cfg 파일 수정
+      lineinfile:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^[ ]{16}- 8.8.8.8', line: '                - 10.233.0.3' }
+        - { regexp: '^[ ]{16}- bestpath.co.kr', line: '                - cluster.local' }
+
+    - name: openfiles setting
+      command: "netplan apply"
+      ignore_errors: yes
+
+    - name: openfiles setting
+      command: "echo 'fs.file-max = 65536' >> /etc/sysctl.conf"
+      ignore_errors: yes
+
+    - name: openfiles setting
+      command: "sysctl -p"
+      ignore_errors: yes
+
+
+
 - hosts: controllplan01
   become: true
   become_user: root
