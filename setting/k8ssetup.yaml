@@ -4,7 +4,7 @@
   vars:
     ansible_become_pass: "@whdgus123!"
   tasks:
-    - name: haproxy.yaml ip setup
+    - name: k8s setting
       shell: "{{ item }}"
       with_items:
       - "kubectl label node worker01 node-role=worker"
@@ -29,9 +29,45 @@
       - "helm install --create-namespace --namespace harbor harbor goharbor/harbor -f iac-devops/cicd/apps-helm-chart/apps/harbor_values.yaml -n harbor"
       - "helm repo add gitea-charts http://192.168.110.201:8081/repository/gitea-helm/"
       - "helm install --create-namespace --namespace gitea gitea  gitea-charts/gitea -f iac-devops/cicd/apps-helm-chart/apps/gitea-values.yaml"
+      - "curl -u oneuser:onepredict99\!\@ -X POST -H "Content-Type: application/json" -d '{"name": "iac-devops", "private": false}' http://gitea-http.gitea:3000/api/v1/user/repos"
+      - "git clone http://gitea-http.gitea:3000/oneuser/iac-devpos.git"
+      - "cd ~/iac-devops && kubectl apply -f ip.yaml"
+      - "cd ~/iac-devops && kubectl apply -f pool.yaml"
      
       register: result
 
     - name: 결과 출력
       debug:
         var: result
+
+    - name: git push 실행 및 계정 정보 입력
+      expect:
+        command: "git clone http://gitea-http.gitea:3000/oneuser/iac-devops.git /tmp/iac-devops"
+        responses:
+          Username for 'http://gitea-http.gitea:3000': oneuser
+          Password for 'http://oneuser@gitea-http.gitea:3000': 'onepredict99!@'
+
+    - name: iac-devpos file push
+      shell: "{{ item }}"
+      with_items:
+        - "cp -ar  /home/ubuntu/iac-devops/* /tmp/iac-devops/"
+        - git config --global user.name oneuser
+        - git config --global user.email oneuser@onepredict.net
+        - cd /tmp/iac-devops && git add . && git commit -m "turbo"
+
+    - name: 쉘 스크립트 생성
+      copy:
+        content: |
+          #!/bin/bash
+          cd /tmp/iac-devops
+          git push
+        dest: change_dir.sh
+        mode: 0755
+    - name: git push 실행 및 계정 정보 입력
+      expect:
+        command: "./change_dir.sh"
+        responses:
+          Username for 'http://gitea-http.gitea:3000': oneuser
+          Password for 'http://oneuser@gitea-http.gitea:3000': 'onepredict99!@'
+
+    
