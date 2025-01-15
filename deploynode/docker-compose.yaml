@@ -1,6 +1,8 @@
+version: "3.9"
+
 services:
   deploynode:
-    image: deploynode:v1
+    image: deploynode:v3
     ports:
       - "2222:22"
     env_file:
@@ -12,4 +14,6 @@ services:
       - "worker01:192.168.110.60"
       - "worker02:192.168.110.61"
       - "worker03:192.168.110.62"
-    restart: always
+    volumes:
+      - ./inventory.ini:/deploy/kubespray/inventory/onepredict/inventory.ini
+    command: bash -c "cd /deploy/ansible && git pull origin main && chmod +x /deploy/ansible/deploynode/k8sinstall.sh && /deploy/ansible/deploynode/k8sinstall.sh"
