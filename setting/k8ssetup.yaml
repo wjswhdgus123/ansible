@@ -33,6 +33,13 @@
     - name: openfiles setting
       command: "sysctl -p"
       ignore_errors: yes
+    
+    - name: openfiles setting
+      command: "echo '* hard nofile 65535 ' > /etc/security/limits.conf "
+      ignore_errors: yes
+    - name: openfiles setting
+      command: "echo '* soft nofile 65535 ' > /etc/security/limits.conf "
+      ignore_errors: yes
 
 
 
