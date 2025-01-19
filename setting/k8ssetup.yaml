@@ -22,25 +22,26 @@
         - { regexp: '^[ ]{16}- 8.8.8.8', line: '                - 10.233.0.3' }
         - { regexp: '^[ ]{16}- bestpath.co.kr', line: '                - cluster.local' }
 
-    - name: openfiles setting
+    - name: net apply 
       command: "netplan apply"
       ignore_errors: yes
 
-    - name: openfiles setting
-      command: "echo 'fs.file-max = 65536' >> /etc/sysctl.conf"
-      ignore_errors: yes
 
-    - name: openfiles setting
-      command: "sysctl -p"
-      ignore_errors: yes
-    
-    - name: openfiles setting
-      command: "echo '* hard nofile 65535 ' >> /etc/security/limits.conf "
-      ignore_errors: yes
-    - name: openfiles setting
-      command: "echo '* soft nofile 65535 ' >> /etc/security/limits.conf "
-      ignore_errors: yes
 
+- hosts: all
+  become: true
+  become_user: root
+  vars:
+    ansible_become_pass: "@whdgus123!"
+  tasks:
+    - name: k8s setting
+      shell: "{{ item }}"
+      with_items:
+      - "sleep 15"
+      - "echo 'fs.file-max = 65536' >> /etc/sysctl.conf "
+      - "sysctl -p"
+      - "echo '* hard nofile 65535 ' >> /etc/security/limits.conf"
+      - "echo '* soft nofile 65535 ' >> /etc/security/limits.conf"
 
 
 - hosts: controllplan01
@@ -52,9 +53,7 @@
     - name: k8s setting
       shell: "{{ item }}"
       with_items:
-      - "echo 'fs.file-max = 65536' >> /etc/sysctl.conf "
-      - "sysctl -p"
-      - "sleep 15"  
+     
       - "kubectl label node worker01 node-role=worker"
       - "kubectl label node worker01 node-role.kubernetes.io/worker="
       - "kubectl label node worker02 node-role=worker"
