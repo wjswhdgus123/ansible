@@ -1,19 +1,17 @@
-version: "3.9"
-
 services:
   deploynode:
-    image: deploynode:v3
+    image: harbor.onepredict.net/offline/deploynode:v2.27
     ports:
       - "2222:22"
     env_file:
       - .env
     extra_hosts:
-      - "controllplan01:192.168.110.50"
-      - "controllplan02:192.168.110.51"
-      - "controllplan03:192.168.110.52"
-      - "worker01:192.168.110.60"
-      - "worker02:192.168.110.61"
-      - "worker03:192.168.110.62"
+      - "gsc-turbo-controllplan-001: 10.10.30.250"
+      - "gsc-turbo-controllplan-002: 10.10.30.251"
+      - "gsc-turbo-controllplan-003: 10.10.30.252"
+      - "gsc-turbo-worker-001: 10.10.30.230"
+      - "gsc-turbo-worker-002: 10.10.30.231"
+      - "gsc-turbo-worker-003: 10.10.30.232"
     volumes:
       - ./inventory.ini:/deploy/kubespray/inventory/onepredict/inventory.ini
     command: bash -c "cd /deploy/ansible && git pull origin main && chmod +x /deploy/ansible/deploynode/k8sinstall.sh && /deploy/ansible/deploynode/k8sinstall.sh"
