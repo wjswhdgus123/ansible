@@ -1,29 +1,26 @@
 - hosts: all
   become: true
-  become_user: root
-  vars:
-    ansible_become_pass: "@whdgus123!"
+  vars_files:
+    - env.yaml
   tasks:
     - name: 기존 sources.list 파일 백업
       command: cp /etc/apt/sources.list /etc/apt/sources.list.bak
       ignore_errors: yes
 
-   
-   
     - name: 기존 APT 소스 제거
       command: rm -fr /etc/apt/sources.list
 
     - name: 기존 APT 소스 제거
-      command: touch /etc/apt/sources.list  
+      command: touch /etc/apt/sources.list
 
     - name: APT 저장소 추가
       apt_repository:
-        repo: deb http://192.168.110.201:8081/repository/apt/ jammy main restricted universe multiverse
+        repo: "deb {{ APT }}/repository/apt/ jammy main restricted universe multiverse"
         state: present
 
     - name: APT 보안 저장소 추가
       apt_repository:
-        repo: deb http://192.168.110.201:8081/repository/apt_security/ jammy-security main restricted universe multiverse
+        repo: "deb {{ APT }}/repository/apt_security/ jammy-security main restricted universe multiverse"
         state: present
 
     - name: APT 캐시 업데이트
@@ -49,7 +46,6 @@
         line: '%sudo   ALL=(ALL:ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
 
-    
     - name: chrony 패키지 설치
       apt:
         name: chrony
@@ -61,14 +57,14 @@
         path: /etc/chrony/chrony.conf
         line: "allow {{ ansible_default_ipv4.address }}"
         state: present
-      when: inventory_hostname == 'controllplan01'
+      when: inventory_hostname == {{ CONTROLPLAN01 }}
 
     - name: chrony 설정 파일 수정 (other nodes)
       lineinfile:
         path: /etc/chrony/chrony.conf
-        line: "server controllplan01 iburst"
+        line: "server {{ CONTROLPLAN01 }} iburst"
         state: present
-      when: inventory_hostname != 'controllplan01'
+      when: inventory_hostname != {{ CONTROLPLAN01 }}
 
     - name: chrony 서비스 재시작
       service:
@@ -79,7 +75,6 @@
         name: fio
         state: present
         update_cache: yes
-
 
     - name: telnet 설치
       apt:
@@ -96,10 +91,8 @@
 
 - hosts: kube_control_plane
   become: true
-  become_user: root
-  vars:
-    ansible_become_pass: "@whdgus123!"
-    VIP: 192.168.110.250
+  vars_files:
+    - env.yaml
 
   tasks:
     - name: keepalived 및 HAProxy 패키지 설치
@@ -110,10 +103,10 @@
       loop:
         - keepalived
         - haproxy
-    
+
     - name: k9s 다운로드 및 설치
       shell: |
-        wget http://192.168.110.201:8081/repository/filerepo/k9s/k9s_linux_amd64.deb
+        wget {{ APT }}/repository/filerepo/k9s/k9s_linux_amd64.deb
         dpkg -i k9s_linux_amd64.deb
       register: result
 
@@ -124,19 +117,19 @@
       set_fact:
         priority: 100
         state: "MASTER"
-      when: inventory_hostname == "controllplan01"
+      when: inventory_hostname == "{{ CONTROLPLAN01 }}"
 
     - name: controllplan02 priority 및 state 값 설정
       set_fact:
         priority: 99
         state: "BACKUP"
-      when: inventory_hostname == "controllplan02"
+      when: inventory_hostname == "{{ CONTROLPLAN02 }}"
 
     - name: controllplan03 priority 및 state 값 설정
       set_fact:
         priority: 98
         state: "BACKUP"
-      when: inventory_hostname == "controllplan03"
+      when: inventory_hostname == "{{ CONTROLPLAN03 }}"
 
     - name: keepalived 설정 파일 생성
       blockinfile:
@@ -160,7 +153,7 @@
           }
 
           vrrp_instance haproxy-vip {
-            state {{ hostvars[inventory_hostname].state }} 
+            state {{ hostvars[inventory_hostname].state }}
             priority {{ hostvars[inventory_hostname].priority }}
             interface enp129s0f0
             virtual_router_id 60
@@ -180,7 +173,6 @@
             }
           }
 
-
     - name: 인터페이스 정보 수집
       set_fact:
         interface_name: "{{ ansible_default_ipv4.interface }}"
@@ -197,17 +189,15 @@
         path: /etc/haproxy/haproxy.cfg
         create: yes
         block: |
-        
-
           listen kubernetes-apiserver-https
-            bind *:16443  # VIP 변수 사용
+            bind *:16443
             mode tcp
             option log-health-checks
             timeout client 3h
             timeout server 3h
-            server controllplan01 {{ hostvars['controllplan01'].ansible_host }}:6443 check check-ssl verify none inter 10000
-            server controllplan02 {{ hostvars['controllplan02'].ansible_host }}:6443 check check-ssl verify none inter 10000
-            server controllplan03 {{ hostvars['controllplan03'].ansible_host }}:6443 check check-ssl verify none inter 10000
+            server {{ CONTROLPLAN01 }} {{ hostvars[CONTROLPLAN01].ansible_host }}:6443 check check-ssl verify none inter 10000
+            server {{ CONTROLPLAN02 }} {{ hostvars[CONTROLPLAN02].ansible_host }}:6443 check check-ssl verify none inter 10000
+            server {{ CONTROLPLAN03 }} {{ hostvars[CONTROLPLAN03].ansible_host }}:6443 check check-ssl verify none inter 10000
             balance roundrobin
 
           listen stats
@@ -217,21 +207,3 @@
             stats enable
             stats hide-version
             stats realm Haproxy\ Statistics
-            stats uri /
-            stats auth admin:onepredict99!@
-     
-    - name: keepalived 서비스 재시작
-      service:
-        name: keepalived
-        state: started
-    - name: haproxy 서비스 시작
-      service:
-        name: haproxy
-        state: started
-      ignore_errors: yes
-    - name: haproxy 서비스 재시작
-      service:
-        name: haproxy
-        state: restarted
-      ignore_errors: yes
-  
