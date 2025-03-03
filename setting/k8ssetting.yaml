@@ -1,5 +1,97 @@
+- hosts: all
+  become: true
+  vars_files:
+    - env.yaml
+  tasks:
+    - name: 기존 sources.list 파일 백업
+      command: cp /etc/apt/sources.list /etc/apt/sources.list.bak
+      ignore_errors: yes
+
+    - name: 기존 APT 소스 제거
+      command: rm -fr /etc/apt/sources.list
+
+    - name: 기존 APT 소스 제거
+      command: touch /etc/apt/sources.list
+
+    - name: APT 저장소 추가
+      apt_repository:
+        repo: "deb {{ APT }}/repository/apt/ jammy main restricted universe multiverse"
+        state: present
+
+    - name: APT 보안 저장소 추가
+      apt_repository:
+        repo: "deb {{ APT }}/repository/apt_security/ jammy-security main restricted universe multiverse"
+        state: present
+
+    - name: APT 캐시 업데이트
+      apt:
+        update_cache: yes
+    - name: /var/lib/apt/lists/* 파일 삭제
+      file:
+        path: /var/lib/apt/lists/*
+        state: absent
+    - name: apt update 및 upgrade 실행
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: hostname 변경
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: sudoers 파일 수정
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        line: '%sudo   ALL=(ALL:ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: chrony 패키지 설치
+      apt:
+        name: chrony
+        state: present
+        update_cache: yes
+
+    - name: chrony 설정 파일 수정 (controllplan01)
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        line: "allow {{ ansible_default_ipv4.address }}"
+        state: present
+      when: inventory_hostname == {{ CONTROLPLAN01 }}
+
+    - name: chrony 설정 파일 수정 (other nodes)
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        line: "server {{ CONTROLPLAN01 }} iburst"
+        state: present
+      when: inventory_hostname != {{ CONTROLPLAN01 }}
+
+    - name: chrony 서비스 재시작
+      service:
+        name: chrony
+        state: restarted
+    - name: 디스크 속도 측정 도구 설치
+      apt:
+        name: fio
+        state: present
+        update_cache: yes
+
+    - name: telnet 설치
+      apt:
+        name: telnet
+        state: present
+
+    - name: tcpflow 설치
+      apt:
+        name: tcpflow
+        state: present
+    - name: 타임존을 Asia/Seoul로 설정
+      timezone:
+        name: Asia/Seoul
+
 - hosts: kube_control_plane
   become: true
+  
   vars_files:
     - env.yaml
 
@@ -28,28 +120,16 @@
         state: "MASTER"
       when: inventory_hostname == "{{ CONTROLPLAN01 }}"
 
-    - debug: # controllplan01 state 값 확인
-        msg: "controllplan01 - state: {{ state }}, priority: {{ priority }}"
-      when: inventory_hostname == "{{ CONTROLPLAN01 }}"
-
     - name: controllplan02 priority 및 state 값 설정
       set_fact:
         priority: 99
         state: "BACKUP"
       when: inventory_hostname == "{{ CONTROLPLAN02 }}"
 
-    - debug: # controllplan02 state 값 확인
-        msg: "controllplan02 - state: {{ state }}, priority: {{ priority }}"
-      when: inventory_hostname == "{{ CONTROLPLAN02 }}"
-
     - name: controllplan03 priority 및 state 값 설정
       set_fact:
         priority: 98
         state: "BACKUP"
-      when: inventory_hostname == "{{ CONTROLPLAN03 }}"
-
-    - debug: # controllplan03 state 값 확인
-        msg: "controllplan03 - state: {{ state }}, priority: {{ priority }}"
       when: inventory_hostname == "{{ CONTROLPLAN03 }}"
 
     - name: keepalived 설정 파일 생성
