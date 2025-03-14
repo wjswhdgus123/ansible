@@ -13,7 +13,7 @@
             version: 2
             renderer: networkd
             ethernets:
-              {{ ansible_default_ipv4.interface }}:
+              {{ ansible_default_ipv4.interface }}
                 dhcp4: no
             bridges:
               br0:

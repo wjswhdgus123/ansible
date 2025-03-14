@@ -89,7 +89,7 @@
         - name: Set open file limit
           lineinfile:
             path: /etc/security/limits.conf
-            line: '* hard nofile 65536'
+            line: 'root hard nofile 65536'
             state: present
 
         - name: Set open file limit for root

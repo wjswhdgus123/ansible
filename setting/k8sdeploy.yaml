@@ -1,0 +1,67 @@
+- hosts: controllplan01
+  become: true
+  become_user: root
+  vars:
+    ansible_become_pass: "@whdgus123!"
+  tasks:
+    - name: k8s setting
+      shell: "{{ item }}"
+      with_items:
+     
+      - "kubectl label node worker01 node-role=worker"
+      - "kubectl label node worker01 node-role.kubernetes.io/worker="
+      - "kubectl label node worker02 node-role=worker"
+      - "kubectl label node worker02 node-role.kubernetes.io/worker="
+      - "kubectl label node worker03 node-role=worker"
+      - "kubectl label node worker03 node-role.kubernetes.io/worker="
+      - "wget http://192.168.110.201:8081/repository/filerepo/deployfile/iac.tar.gz"
+      - "tar xvzf iac.tar.gz"
+      - "kubectl get configmap kube-proxy -n kube-system -o yaml  |sed -e 's/mode: \"\"/mode: \"ipvs\"/'|kubectl apply -f - -n kube-system"
+      - "kubectl get configmap kube-proxy -n kube-system -o yaml |sed -e 's/strictARP: false/strictARP: true/' |kubectl apply -f - -n kube-system"
+      - "kubectl apply -f iac-devops/cicd/apps-helm-chart/apps/metallb-native.yaml"
+      - "helm repo add rook-release http://192.168.110.201:8081/repository/rook-ceph"
+      - "helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph -f iac-devops/cicd/apps-helm-chart/apps/rook-ceph-values.yaml"
+      - "sleep 30"
+      - "helm install --create-namespace --namespace rook-ceph rook-ceph-cluster rook-release/rook-ceph-cluster -f iac-devops/cicd/apps-helm-chart/apps/rook-ceph-cluster-values.yaml"
+      - "sleep 160"
+      - "helm repo add argo http://192.168.110.201:8081/repository/argocd "
+      - "helm install --create-namespace --namespace argocd argocd argo/argo-cd  -f iac-devops/cicd/apps-helm-chart/apps/values-argocd.yaml -n argocd"
+      - "helm repo add goharbor http://192.168.110.201:8081/repository/harbor-helm"
+      - "helm install --create-namespace --namespace harbor harbor goharbor/harbor -f iac-devops/cicd/apps-helm-chart/apps/harbor_values.yaml -n harbor"
+      - "helm repo add gitea-charts http://192.168.110.201:8081/repository/gitea-helm/"
+      - "helm install --create-namespace --namespace gitea gitea  gitea-charts/gitea -f iac-devops/cicd/apps-helm-chart/apps/gitea-values.yaml"
+      - "sleep 160"  
+      - "curl -u oneuser:onepredict99\\!@ -X POST -H \"Content-Type: application/json\" -d '{\"name\": \"iac-devops\", \"private\": false}' http://gitea-http.gitea:3000/api/v1/user/repos"
+      - "cd /home/ubuntu/iac-devops/cicd/apps-helm-chart/apps && kubectl apply -f ip.yaml"
+      - "cd /home/ubuntu/iac-devops/cicd/apps-helm-chart/apps && kubectl apply -f pool.yaml"
+     
+
+    - name: git push 실행 및 계정 정보 입력
+      expect:
+        command: "git clone http://gitea-http.gitea:3000/oneuser/iac-devops.git /tmp/iac-devops"
+        responses:
+          Username for 'http://gitea-http.gitea:3000': oneuser
+          Password for 'http://oneuser@gitea-http.gitea:3000': 'onepredict99!@'
+
+    - name: iac-devpos file push
+      shell: "{{ item }}"
+      with_items:
+        - "cp -ar  /home/ubuntu/iac-devops/* /tmp/iac-devops/"
+        - git config --global user.name oneuser
+        - git config --global user.email oneuser@onepredict.net
+        - cd /tmp/iac-devops && git add . && git commit -m "turbo"
+
+    - name: 쉘 스크립트 생성
+      copy:
+        content: |
+          #!/bin/bash
+          cd /tmp/iac-devops
+          git push
+        dest: change_dir.sh
+        mode: 0755
+    - name: git push 실행 및 계정 정보 입력
+      expect:
+        command: "./change_dir.sh"
+        responses:
+          Username for 'http://gitea-http.gitea:3000': oneuser
+          Password for 'http://oneuser@gitea-http.gitea:3000': 'onepredict99!@'
