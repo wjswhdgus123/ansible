@@ -57,14 +57,14 @@
         path: /etc/chrony/chrony.conf
         line: "allow {{ ansible_default_ipv4.address }}"
         state: present
-      when: inventory_hostname == {{ CONTROLPLAN01 }}
+      when: inventory_hostname == '{{ CONTROLPLAN01 }}'
 
     - name: chrony 설정 파일 수정 (other nodes)
       lineinfile:
         path: /etc/chrony/chrony.conf
         line: "server {{ CONTROLPLAN01 }} iburst"
         state: present
-      when: inventory_hostname != {{ CONTROLPLAN01 }}
+      when: inventory_hostname != '{{ CONTROLPLAN01 }}'
 
     - name: chrony 서비스 재시작
       service:
