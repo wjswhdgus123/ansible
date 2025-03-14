@@ -1,7 +1,7 @@
 - hosts: all
   become: true
   vars_files:
-    - env.yaml
+    - deploynode/env.yaml
   tasks:
     - name: 기존 sources.list 파일 백업
       command: cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -93,7 +93,7 @@
   become: true
   
   vars_files:
-    - env.yaml
+    - deploynode/env.yaml
 
   tasks:
     - name: keepalived 및 HAProxy 패키지 설치
