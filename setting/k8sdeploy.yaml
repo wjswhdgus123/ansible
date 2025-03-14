@@ -1,4 +1,4 @@
-- hosts: controllplan01
+- hosts: controllplan-01
   become: true
   become_user: root
   vars_files:
