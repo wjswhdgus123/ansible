@@ -41,20 +41,5 @@
       - "echo `root hard nofile 65535 ' >> /etc/security/limits.conf"
       - "echo 'root soft nofile 65535 ' >> /etc/security/limits.conf"
 
-- name: Replace IP address in files
-  find:
-    paths: iac-devops
-    file_type: file
-  register: found_files
-
-- name: Replace IP address in each file
-  replace:
-    path: "{{ item.path }}"
-    regexp: '10\.10\.30\.210'
-    replace: "{{ repo }}"
-  with_items: "{{ found_files.files }}"
-
-
-
 
     
