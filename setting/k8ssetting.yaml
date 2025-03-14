@@ -212,9 +212,9 @@
     - name: Keepalived 서비스 시작
       service:
         name: keepalived
-        state: started
+        state: restarted
 
-    - name: Keepalived 서비스 시작
+    - name: Haproxy 서비스 시작
       service:
         name: haproxy
-        state: started
+        state: restarted
