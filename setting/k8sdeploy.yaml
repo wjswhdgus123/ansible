@@ -1,4 +1,4 @@
-- hosts: controllplan-01
+- hosts: controllplan
   become: true
   become_user: root
   vars_files:
@@ -8,12 +8,12 @@
       shell: "{{ item }}"
       with_items:
      
-      - "kubectl label node worker01 node-role=worker"
-      - "kubectl label node worker01 node-role.kubernetes.io/worker="
-      - "kubectl label node worker02 node-role=worker"
-      - "kubectl label node worker02 node-role.kubernetes.io/worker="
-      - "kubectl label node worker03 node-role=worker"
-      - "kubectl label node worker03 node-role.kubernetes.io/worker="
+      - "kubectl label node {{ WORK01 }} node-role=worker"
+      - "kubectl label node {{ WORK01 }} node-role.kubernetes.io/worker="
+      - "kubectl label node {{ WORK02 }} node-role=worker"
+      - "kubectl label node {{ WORK02 }} node-role.kubernetes.io/worker="
+      - "kubectl label node {{ WORK03 }} node-role=worker"
+      - "kubectl label node {{ WORK01 }} node-role.kubernetes.io/worker="
       - "wget http://192.168.110.201:8081/repository/filerepo/deployfile/iac-devops.tar.gz"
       - "tar xvzf iac-devops.tar.gz"
       - "find iac-devops -type f -exec sed -i 's/10.10.30.210/{{ repo }}/g' {} +"
