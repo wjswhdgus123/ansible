@@ -30,7 +30,7 @@
       - "helm repo add goharbor {{ APT }}/repository/harbor-helm"
       - "helm install --create-namespace --namespace harbor harbor goharbor/harbor -f iac-devops/cicd/apps-helm-chart/apps/on-premise/harbor_values.yaml -n harbor"
       - "helm repo add gitea-charts {{ APT }}/repository/gitea-helm/"
-      - "helm install --create-namespace --namespace gitea gitea  gitea-charts/gitea -f iac-devops/cicd/apps-helm-chart/apps/on-premise/gitea-values.yaml"
+      - "helm install --create-namespace --namespace gitea gitea  gitea-charts/gitea --version 10.4.1 -f iac-devops/cicd/apps-helm-chart/apps/on-premise/gitea-values.yaml"
       - "sleep 160"  
       - "curl -u oneuser:onepredict99\\!@ -X POST -H \"Content-Type: application/json\" -d '{\"name\": \"iac-devops\", \"private\": false}' http://gitea-http.gitea:3000/api/v1/user/repos"
       - "cd /home/ubuntu/iac-devops/cicd/apps-helm-chart/apps && kubectl apply -f ip.yaml"
