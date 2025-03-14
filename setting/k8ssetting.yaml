@@ -208,3 +208,13 @@
             stats enable
             stats hide-version
             stats realm Haproxy\ Statistics
+
+    - name: Keepalived 서비스 시작
+      service:
+        name: keepalived
+        state: started
+
+    - name: Keepalived 서비스 시작
+      service:
+        name: haproxy
+        state: started
