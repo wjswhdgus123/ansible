@@ -21,7 +21,7 @@ echo "envconvert"
 ansible-playbook /deploy/ansible/deploynode/envconvert.yaml
 
 echo "k8s node setting"
-ansible-playbook -i /deploy/kubespray/inventory/onepredict/inventory.ini  /deploy/ansible/setting/k8ssetting.yaml  -u $USER -b --become-user root -k -K
+sshpass -p "$PW" ansible-playbook -i /deploy/kubespray/inventory/onepredict/inventory.ini  /deploy/ansible/setting/k8ssetting.yaml  -u $USER -b --become-user root -k 
 cd /deploy/kubespray
-ansible-playbook  -i /deploy/kubespray/inventory/onepredict/inventory.ini cluster.yml  --forks 90 -b --become-user root -u $TURBOUSER  -k 
-ansible-playbook -i /deploy/kubespray/inventory/onepredict/inventory.ini  -u $USER  -b --become-user root   /deploy/ansible/setting/k8ssetup.yaml -k
+sshpass -p "$PW" ansible-playbook  -i /deploy/kubespray/inventory/onepredict/inventory.ini cluster.yml  --forks 90 -b --become-user root -u $TURBOUSER  -k 
+sshpass -p "$PW" ansible-playbook -i /deploy/kubespray/inventory/onepredict/inventory.ini  -u $USER  -b --become-user root   /deploy/ansible/setting/k8ssetup.yaml -k
